@@ -1,0 +1,39 @@
+name: Inspect TraderDesk 1.4.0+35
+on:
+  push:
+    paths: [.github/workflows/inspect-140.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect new archive without running project
+        run: |
+          python3 - <<'PY'
+          import pathlib, zipfile, hashlib, re
+          p = pathlib.Path('TraderDesk_Android_Project_v1.4.0+35.zip')
+          blob = p.read_bytes()
+          assert hashlib.sha1(b'blob ' + str(len(blob)).encode() + b'\0' + blob).hexdigest() == 'fc53dd9f7b07f99bcd22a6ac850d170f1bc80c29', 'Archive changed'
+          report = ['Archive: ' + p.name, 'SHA256: ' + hashlib.sha256(blob).hexdigest()]
+          wanted = {'pubspec.yaml','pubspec.lock','.metadata','.fvmrc','fvm_config.json','settings.gradle','settings.gradle.kts','build.gradle','build.gradle.kts','gradle.properties','gradle-wrapper.properties','README.md'}
+          with zipfile.ZipFile(p) as z:
+              report.append('Entries: ' + str(len(z.infolist())))
+              for i in z.infolist():
+                  path = pathlib.PurePosixPath(i.filename)
+                  assert not path.is_absolute() and '..' not in path.parts, 'Unsafe path'
+                  if path.name in wanted and i.file_size < 200000:
+                      text = z.read(i).decode('utf-8', errors='replace')
+                      text = '\n'.join('[REDACTED]' if re.search(r'password|secret|token|api[_-]?key|credential', line, re.I) else line for line in text.splitlines())
+                      report.extend(['', '--- ' + i.filename + ' ---', text])
+          pathlib.Path('TRADERDESK_140_INSPECTION.txt').write_text('\n'.join(report) + '\n')
+          PY
+      - name: Save inspection report
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add TRADERDESK_140_INSPECTION.txt
+          git diff --cached --quiet || (git commit -m 'Record TraderDesk 1.4.0+35 requirements' && git push)
