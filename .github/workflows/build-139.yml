@@ -1,0 +1,72 @@
+name: TraderDesk 1.3.9+34 APK
+on:
+  push:
+    paths: [.github/workflows/build-139.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify and extract exact archive
+        run: |
+          python3 - <<'PY'
+          import zipfile, pathlib, hashlib
+          p = pathlib.Path('TraderDesk_Android_Project_v1.3.9+34.zip')
+          assert hashlib.sha256(p.read_bytes()).hexdigest() == '86be25c3fbee1ba731c03caf66fa01d211f884d06f2dc29679bb2138f7fdc7b1', 'Archive changed'
+          root = pathlib.Path('source').resolve()
+          root.mkdir()
+          with zipfile.ZipFile(p) as z:
+              for item in z.infolist():
+                  assert (root / item.filename).resolve().is_relative_to(root), 'Unsafe path'
+              z.extractall(root)
+          project = root / 'TraderDesk_Android_Project'
+          assert 'version: 1.3.9+34' in (project / 'pubspec.yaml').read_text(), 'Wrong version'
+          (project / 'android/local.properties').unlink(missing_ok=True)
+          PY
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Resolve locked dependencies and build APK
+        shell: bash
+        run: |
+          set -o pipefail
+          cd source/TraderDesk_Android_Project
+          {
+            flutter --version
+            flutter pub get --enforce-lockfile && flutter build apk --debug --no-pub --build-name=1.3.9 --build-number=34
+          } 2>&1 | tee "$GITHUB_WORKSPACE/TRADERDESK_139_BUILD.log"
+      - name: Collect APK
+        run: |
+          mkdir -p output-apk
+          cp source/TraderDesk_Android_Project/build/app/outputs/flutter-apk/app-debug.apk output-apk/TraderDesk-v1.3.9+34-debug.apk
+          cd output-apk
+          sha256sum *.apk > SHA256SUMS.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TraderDesk-v1.3.9-build34
+          path: output-apk/*
+          if-no-files-found: error
+      - name: Publish exact version
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "traderdesk-v1.3.9-build34-${{ github.run_id }}" output-apk/* --target "${{ github.sha }}" --title "TraderDesk 1.3.9+34 debug APK" --notes "Built exclusively from verified TraderDesk_Android_Project_v1.3.9+34.zip. Debug signing; not a production signing key."
+      - name: Save build log for diagnosis
+        if: always()
+        run: |
+          if [ -f TRADERDESK_139_BUILD.log ]; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add TRADERDESK_139_BUILD.log
+            git diff --cached --quiet || (git commit -m 'Record TraderDesk 1.3.9+34 build log' && git push)
+          fi
