@@ -1,0 +1,82 @@
+name: TraderDesk 1.5.5+41 new upload 207f8713
+on:
+  push:
+    paths: [.github/workflows/build-155-new-upload.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dcd35dcecb84ee09e6f5e43e3752060ee1fcc4ed
+      - name: Verify new upload and internal version
+        run: |
+          python3 - <<'PY'
+          import pathlib, zipfile, hashlib, re, os
+          p = pathlib.Path('TraderDesk_1.5.5_build41.zip')
+          data = p.read_bytes()
+          assert hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest() == '207f8713dfcde3e42805a1d51fbb0823976b2e9b', 'Wrong archive'
+          root = pathlib.Path('source-new').resolve()
+          root.mkdir()
+          with zipfile.ZipFile(p) as z:
+              for i in z.infolist():
+                  assert (root / i.filename).resolve().is_relative_to(root), 'Unsafe archive path'
+              z.extractall(root)
+          projects = []
+          for f in root.rglob('pubspec.yaml'):
+              m = re.search(r'^version:\s*[\"\']?([^\s\"\']+)', f.read_text(), re.M)
+              if m and m.group(1) == '1.5.5+41' and (f.parent / 'android').is_dir():
+                  projects.append(f.parent)
+          assert len(projects) == 1, 'Expected one Android project at version 1.5.5+41'
+          project = projects[0]
+          (project / 'android/local.properties').unlink(missing_ok=True)
+          with open(os.environ['GITHUB_ENV'], 'a') as env:
+              env.write(f'PROJECT_DIR={project}\n')
+          print('Verified NEW upload:', p, project)
+          PY
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.47.7'
+      - name: Build debug APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$PROJECT_DIR"
+          {
+            flutter --version
+            java -version
+            flutter pub get --enforce-lockfile && flutter build apk --debug --no-pub
+          } 2>&1 | tee "$GITHUB_WORKSPACE/BUILD_NEW_155.log"
+      - name: Collect APK
+        run: |
+          mkdir -p apk-new
+          cp "$PROJECT_DIR/build/app/outputs/flutter-apk/app-debug.apk" apk-new/TraderDesk-v1.5.5+41-new-207f8713-debug.apk
+          cd apk-new
+          sha256sum *.apk > SHA256SUMS.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TraderDesk-1.5.5-new-207f8713
+          path: apk-new/*
+          if-no-files-found: error
+      - name: Publish new upload only
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "traderdesk-v1.5.5-new-207f8713-${{ github.run_id }}" apk-new/* --target dcd35dcecb84ee09e6f5e43e3752060ee1fcc4ed --title "TraderDesk 1.5.5+41 NEW upload 207f8713 debug APK" --notes "Source: TraderDesk_1.5.5_build41.zip uploaded 2026-11-05 19:02:46 UTC. Not the earlier GitHub_Compatible archive. Debug signing for testing, not production."
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: TraderDesk-new-207f8713-build-log
+          path: BUILD_NEW_155.log
+          if-no-files-found: warn
