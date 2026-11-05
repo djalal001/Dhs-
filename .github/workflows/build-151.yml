@@ -1,0 +1,89 @@
+name: TraderDesk 1.5.1+37 APK
+
+on:
+  push:
+    paths: [.github/workflows/build-151.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify archive and internal version
+        run: |
+          python3 - <<'PY'
+          import pathlib, zipfile, re
+          p = pathlib.Path('TraderDesk_Android_Project_v1.5.1+37.zip')
+          assert p.exists(), 'v1.5.1+37 archive is missing'
+          root = pathlib.Path('source-151').resolve()
+          root.mkdir()
+          with zipfile.ZipFile(p) as z:
+              for i in z.infolist():
+                  assert (root / i.filename).resolve().is_relative_to(root), 'Unsafe archive path'
+              z.extractall(root)
+          project = root / 'TraderDesk_Android_Project'
+          text = (project / 'pubspec.yaml').read_text()
+          match = re.search(r'^version:\s*[\"\']?([^\s\"\']+)', text, re.M)
+          assert match and match.group(1) == '1.5.1+37', 'Internal version does not match 1.5.1+37'
+          (project / 'android/local.properties').unlink(missing_ok=True)
+          print('Verified archive and internal version 1.5.1+37')
+          PY
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.47.7'
+
+      - name: Resolve and build exact version
+        shell: bash
+        run: |
+          set -o pipefail
+          cd source-151/TraderDesk_Android_Project
+          {
+            flutter --version
+            java -version
+            flutter pub get --enforce-lockfile && flutter build apk --debug --no-pub
+          } 2>&1 | tee "$GITHUB_WORKSPACE/TRADERDESK_151_BUILD.log"
+
+      - name: Collect APK
+        run: |
+          mkdir -p apk-151
+          cp source-151/TraderDesk_Android_Project/build/app/outputs/flutter-apk/app-debug.apk apk-151/TraderDesk-v1.5.1+37-debug.apk
+          cd apk-151
+          sha256sum *.apk > SHA256SUMS.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TraderDesk-v1.5.1-build37
+          path: apk-151/*
+          if-no-files-found: error
+
+      - name: Publish new version only
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "traderdesk-v1.5.1-build37-${{ github.run_id }}" apk-151/* --target "${{ github.sha }}" --title "TraderDesk 1.5.1+37 debug APK" --notes "Built exclusively from verified v1.5.1+37 archive. Debug signing for testing, not production signing."
+
+      - name: Save build log
+        if: always()
+        run: |
+          if [ -f TRADERDESK_151_BUILD.log ]; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add TRADERDESK_151_BUILD.log
+            git diff --cached --quiet || (git commit -m 'Record TraderDesk 1.5.1+37 build log' && git push)
+          fi
