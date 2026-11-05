@@ -73,7 +73,8 @@ jobs:
       - name: Publish new upload only
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "traderdesk-v1.5.5-new-207f8713-${{ github.run_id }}" apk-new/* --target dcd35dcecb84ee09e6f5e43e3752060ee1fcc4ed --title "TraderDesk 1.5.5+41 NEW upload 207f8713 debug APK" --notes "Source: TraderDesk_1.5.5_build41.zip uploaded 2026-11-05 19:02:46 UTC. Not the earlier GitHub_Compatible archive. Debug signing for testing, not production."
+        run: |
+          gh release create "traderdesk-v1.5.5-new-207f8713-${{ github.run_id }}" apk-new/* --target dcd35dcecb84ee09e6f5e43e3752060ee1fcc4ed --title "TraderDesk 1.5.5+41 NEW upload 207f8713 debug APK" --notes "Source: TraderDesk_1.5.5_build41.zip uploaded 2026-11-05 19:02:46 UTC. Not the earlier GitHub_Compatible archive. Debug signing for testing, not production."
       - uses: actions/upload-artifact@v4
         if: always()
         with:
