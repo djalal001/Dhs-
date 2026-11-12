@@ -1,0 +1,111 @@
+name: TraderDesk ARM64 RELEASE
+on:
+  push:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect and extract project
+        run: |
+          python3 - <<'PY'
+          import pathlib, zipfile, os, re, hashlib
+          archive = pathlib.Path('TraderDesk_Android_Project_v1.6.0_ARM64_RELEASE.zip')
+          root = pathlib.Path('release-source').resolve()
+          root.mkdir()
+          with zipfile.ZipFile(archive) as z:
+              for i in z.infolist():
+                  assert (root / i.filename).resolve().is_relative_to(root), 'Unsafe archive path'
+              z.extractall(root)
+          projects = [p.parent for p in root.rglob('pubspec.yaml') if (p.parent / 'android').is_dir() and (p.parent / 'lib').is_dir()]
+          assert len(projects) == 1, 'Expected one Flutter Android project'
+          project = projects[0]
+          text = (project / 'pubspec.yaml').read_text()
+          m = re.search(r'^version:\s*[\"\']?([^\s\"\']+)', text, re.M)
+          assert m and re.fullmatch(r'[0-9A-Za-z.+-]+', m.group(1)), 'Invalid version'
+          version = m.group(1)
+          (project / 'android/local.properties').unlink(missing_ok=True)
+          with open(os.environ['GITHUB_ENV'], 'a') as env:
+              env.write(f'PROJECT_DIR={project}\nAPP_VERSION={version}\n')
+          report = [f'Archive: {archive}', f'SHA256: {hashlib.sha256(archive.read_bytes()).hexdigest()}', f'Version: {version}']
+          paths = ['pubspec.yaml', 'android/settings.gradle', 'android/settings.gradle.kts', 'android/build.gradle', 'android/build.gradle.kts', 'android/app/build.gradle', 'android/app/build.gradle.kts', 'android/gradle.properties', 'android/gradle/wrapper/gradle-wrapper.properties', 'android/app/proguard-rules.pro']
+          for path in paths:
+              p = project / path
+              if p.exists():
+                  report.append(f'\n--- {path} ---\n{p.read_text()}')
+          pathlib.Path('INSPECTION.txt').write_text('\n'.join(report))
+          PY
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.47.7'
+      - name: Build RELEASE ARM64 only
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$PROJECT_DIR"
+          {
+            flutter --version
+            flutter doctor -v
+            flutter pub get --enforce-lockfile
+            flutter build apk --release --target-platform android-arm64 --no-pub --no-tree-shake-icons --split-debug-info="$GITHUB_WORKSPACE/symbols"
+          } 2>&1 | tee "$GITHUB_WORKSPACE/RELEASE_BUILD.log"
+      - name: Verify and measure release APK
+        run: |
+          python3 - <<'PY'
+          import pathlib, os, zipfile, hashlib, json, subprocess
+          src = pathlib.Path(os.environ['PROJECT_DIR']) / 'build/app/outputs/flutter-apk/app-release.apk'
+          assert src.is_file(), 'Release APK missing'
+          with zipfile.ZipFile(src) as z:
+              abis = {p.split('/')[1] for p in z.namelist() if p.startswith('lib/') and p.endswith('.so')}
+          assert abis == {'arm64-v8a'}, f'Unexpected ABIs: {abis}'
+          sdk = pathlib.Path(os.environ['ANDROID_HOME'])
+          tools = sorted((sdk / 'build-tools').glob('*/aapt'))
+          assert tools, 'aapt missing'
+          badging = subprocess.check_output([str(tools[-1]), 'dump', 'badging', str(src)], text=True)
+          assert 'application-debuggable' not in badging, 'Debuggable APK rejected'
+          out = pathlib.Path('release-apk')
+          out.mkdir()
+          name = f'TraderDesk-{os.environ["APP_VERSION"]}-arm64-v8a-release.apk'
+          dst = out / name
+          dst.write_bytes(src.read_bytes())
+          digest = hashlib.sha256(dst.read_bytes()).hexdigest()
+          (out / 'SHA256SUMS.txt').write_text(f'{digest}  {name}\n')
+          metadata = {'filename': name, 'bytes': dst.stat().st_size, 'MiB': round(dst.stat().st_size / 1048576, 2), 'abi': 'arm64-v8a', 'mode': 'release', 'sha256': digest}
+          (out / 'APK_INFO.json').write_text(json.dumps(metadata, indent=2))
+          pathlib.Path('APK_BADGING.txt').write_text(badging)
+          subprocess.run([str(tools[-1].parent / 'apksigner'), 'verify', '--print-certs', str(dst)], check=True, stdout=open('SIGNING_REPORT.txt', 'w'))
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
+              summary.write(f'## Release APK\nFile: `{name}`\n\nSize: {metadata["MiB"]} MiB ({metadata["bytes"]} bytes)\n\nARM64 only; non-debuggable. See signing report for certificate identity.\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        id: apk
+        with:
+          name: TraderDesk-ARM64-RELEASE-${{ github.run_number }}
+          path: release-apk/*
+          if-no-files-found: error
+      - name: Record download link
+        run: |
+          echo 'Artifact download: ${{ steps.apk.outputs.artifact-url }}' >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: TraderDesk-release-diagnostics-${{ github.run_number }}
+          path: |
+            INSPECTION.txt
+            RELEASE_BUILD.log
+            APK_BADGING.txt
+            SIGNING_REPORT.txt
+            symbols/
+          if-no-files-found: warn
