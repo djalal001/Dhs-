@@ -1,0 +1,87 @@
+name: TraderDesk ABI source 94c6c46f
+on:
+  push:
+    paths: [.github/workflows/build-abi-94c6c46f.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: e1506e8f243db335a7b4be74ae939bb121f0fc95
+      - name: Verify and inspect source
+        run: |
+          python3 - <<'PY'
+          import pathlib, zipfile, hashlib, re, os
+          p = pathlib.Path('TraderDesk_Android_Project_github_abi_build_source.zip')
+          data = p.read_bytes()
+          assert hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest() == '94c6c46ffc430ce2d66f5da158f5aecb5f7fb81f', 'Wrong archive'
+          root = pathlib.Path('source-abi').resolve()
+          root.mkdir()
+          with zipfile.ZipFile(p) as z:
+              for i in z.infolist():
+                  assert (root / i.filename).resolve().is_relative_to(root), 'Unsafe path'
+              z.extractall(root)
+          projects = [f.parent for f in root.rglob('pubspec.yaml') if (f.parent / 'android').is_dir() and (f.parent / 'lib').is_dir()]
+          assert len(projects) == 1, 'Expected one Flutter Android project'
+          project = projects[0]
+          m = re.search(r'^version:\s*[\"\']?([^\s\"\']+)', (project / 'pubspec.yaml').read_text(), re.M)
+          assert m, 'Missing internal version'
+          version = m.group(1)
+          assert re.fullmatch(r'[0-9A-Za-z.+-]+', version), 'Invalid version'
+          (project / 'android/local.properties').unlink(missing_ok=True)
+          with open(os.environ['GITHUB_ENV'], 'a') as env:
+              env.write(f'PROJECT_DIR={project}\nAPP_VERSION={version}\n')
+          pathlib.Path('SOURCE_INFO.txt').write_text(f'Archive: {p}\nGit blob: 94c6c46ffc430ce2d66f5da158f5aecb5f7fb81f\nVersion: {version}\nProject: {project}\nDebug signing for testing, not production.\n')
+          print(pathlib.Path('SOURCE_INFO.txt').read_text())
+          PY
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.47.7'
+      - name: Build ABI debug APKs
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$PROJECT_DIR"
+          { flutter --version && flutter pub get --enforce-lockfile && flutter build apk --debug --split-per-abi --no-pub; } 2>&1 | tee "$GITHUB_WORKSPACE/BUILD_ABI.log"
+      - name: Collect
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p apk-abi
+          for apk in "$PROJECT_DIR"/build/app/outputs/flutter-apk/*-debug.apk; do
+            cp "$apk" "apk-abi/TraderDesk-${APP_VERSION}-94c6c46f-$(basename "$apk")"
+          done
+          cp SOURCE_INFO.txt apk-abi/
+          cd apk-abi
+          sha256sum *.apk > SHA256SUMS.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TraderDesk-ABI-94c6c46f
+          path: apk-abi/*
+          if-no-files-found: error
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "traderdesk-abi-94c6c46f-${{ github.run_id }}" apk-abi/* --target e1506e8f243db335a7b4be74ae939bb121f0fc95 --title "TraderDesk ${APP_VERSION} ABI debug APKs 94c6c46f" --notes-file SOURCE_INFO.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: TraderDesk-ABI-94c6c46f-diagnostics
+          path: |
+            SOURCE_INFO.txt
+            BUILD_ABI.log
+          if-no-files-found: warn
