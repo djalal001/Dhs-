@@ -1,0 +1,88 @@
+name: TraderDesk 1.5.8 fd9866c1
+on:
+  push:
+    paths: [.github/workflows/build-158-fd9866c1.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 093807fcf3fc9f4936772a15282c0bd7d9c583f4
+      - name: Verify source and version
+        run: |
+          python3 - <<'PY'
+          import pathlib, zipfile, hashlib, re, os
+          p = pathlib.Path('TraderDesk_Android_Project_v1.5.zip')
+          data = p.read_bytes()
+          assert hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest() == 'fd9866c10783bd3fe48cf8065a446dd9a13b7017', 'Wrong archive'
+          root = pathlib.Path('source-158').resolve()
+          root.mkdir()
+          with zipfile.ZipFile(p) as z:
+              for i in z.infolist():
+                  assert (root / i.filename).resolve().is_relative_to(root), 'Unsafe path'
+              z.extractall(root)
+          projects = []
+          for f in root.rglob('pubspec.yaml'):
+              m = re.search(r'^version:\s*[\"\']?([^\s\"\']+)', f.read_text(), re.M)
+              if m and m.group(1).split('+')[0] == '1.5.8' and (f.parent / 'android').is_dir():
+                  projects.append((f.parent, m.group(1)))
+          assert len(projects) == 1, 'Expected one Android project at version 1.5.8'
+          project, version = projects[0]
+          assert re.fullmatch(r'[0-9A-Za-z.+-]+', version), 'Invalid version'
+          (project / 'android/local.properties').unlink(missing_ok=True)
+          with open(os.environ['GITHUB_ENV'], 'a') as env:
+              env.write(f'PROJECT_DIR={project}\nAPP_VERSION={version}\n')
+          pathlib.Path('SOURCE_INFO.txt').write_text(f'Archive: {p}\nVersion: {version}\nGit blob: fd9866c10783bd3fe48cf8065a446dd9a13b7017\nDebug signing for testing, not production.\n')
+          print(pathlib.Path('SOURCE_INFO.txt').read_text())
+          PY
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.47.7'
+      - name: Build debug ABI APKs
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$PROJECT_DIR"
+          { flutter --version && flutter pub get --enforce-lockfile && flutter build apk --debug --split-per-abi --no-pub; } 2>&1 | tee "$GITHUB_WORKSPACE/BUILD_158.log"
+      - name: Collect
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p apk-158
+          for apk in "$PROJECT_DIR"/build/app/outputs/flutter-apk/*-debug.apk; do
+            cp "$apk" "apk-158/TraderDesk-${APP_VERSION}-fd9866c1-$(basename "$apk")"
+          done
+          cp SOURCE_INFO.txt apk-158/
+          cd apk-158
+          sha256sum *.apk > SHA256SUMS.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TraderDesk-1.5.8-fd9866c1
+          path: apk-158/*
+          if-no-files-found: error
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "traderdesk-1.5.8-fd9866c1-${{ github.run_id }}" apk-158/* --target 093807fcf3fc9f4936772a15282c0bd7d9c583f4 --title "TraderDesk ${APP_VERSION} ABI debug APKs fd9866c1" --notes-file SOURCE_INFO.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: TraderDesk-1.5.8-fd9866c1-diagnostics
+          path: |
+            SOURCE_INFO.txt
+            BUILD_158.log
+          if-no-files-found: warn
