@@ -1,0 +1,83 @@
+name: TraderDesk latest source 2d56a697
+on:
+  push:
+    paths: [.github/workflows/build-new-2d56a697.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 08eb64795b780ff7a1d8eeec0baf5dd0c843c28d
+      - name: Verify and inspect
+        run: |
+          python3 - <<'PY'
+          import pathlib, zipfile, hashlib, re, os
+          p = pathlib.Path('TraderDesk_Android_Project_v1.5.zip')
+          data = p.read_bytes()
+          assert hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest() == '2d56a697bf628afe657458109d627d7cdfbdd991', 'Wrong archive'
+          root = pathlib.Path('source-new').resolve()
+          root.mkdir()
+          with zipfile.ZipFile(p) as z:
+              for i in z.infolist():
+                  assert (root / i.filename).resolve().is_relative_to(root), 'Unsafe path'
+              z.extractall(root)
+          projects = [f.parent for f in root.rglob('pubspec.yaml') if (f.parent / 'android').is_dir() and (f.parent / 'lib').is_dir()]
+          assert len(projects) == 1, 'Expected one Flutter Android project'
+          project = projects[0]
+          m = re.search(r'^version:\s*[\"\']?([^\s\"\']+)', (project / 'pubspec.yaml').read_text(), re.M)
+          assert m, 'Missing version'
+          version = m.group(1)
+          assert re.fullmatch(r'[0-9A-Za-z.+-]+', version), 'Invalid version'
+          (project / 'android/local.properties').unlink(missing_ok=True)
+          with open(os.environ['GITHUB_ENV'], 'a') as env:
+              env.write(f'PROJECT_DIR={project}\nAPP_VERSION={version}\n')
+          pathlib.Path('SOURCE_INFO.txt').write_text(f'Archive: {p}\nGit blob: 2d56a697bf628afe657458109d627d7cdfbdd991\nVersion: {version}\nDebug signing for testing, not production.\n')
+          print(pathlib.Path('SOURCE_INFO.txt').read_text())
+          PY
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.47.7'
+      - name: Build debug APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$PROJECT_DIR"
+          { flutter --version && flutter pub get --enforce-lockfile && flutter build apk --debug --no-pub; } 2>&1 | tee "$GITHUB_WORKSPACE/BUILD_NEW.log"
+      - name: Collect
+        run: |
+          mkdir -p apk-new
+          cp "$PROJECT_DIR/build/app/outputs/flutter-apk/app-debug.apk" "apk-new/TraderDesk-${APP_VERSION}-2d56a697-debug.apk"
+          cp SOURCE_INFO.txt apk-new/
+          cd apk-new
+          sha256sum *.apk > SHA256SUMS.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TraderDesk-new-2d56a697
+          path: apk-new/*
+          if-no-files-found: error
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "traderdesk-new-2d56a697-${{ github.run_id }}" apk-new/* --target 08eb64795b780ff7a1d8eeec0baf5dd0c843c28d --title "TraderDesk ${APP_VERSION} new source 2d56a697 debug APK" --notes-file SOURCE_INFO.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: TraderDesk-new-2d56a697-diagnostics
+          path: |
+            SOURCE_INFO.txt
+            BUILD_NEW.log
+          if-no-files-found: warn
