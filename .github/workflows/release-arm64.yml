@@ -1,7 +1,10 @@
-name: TraderDesk 1.6.1 ARM64 RELEASE
+name: TraderDesk 1.6.2 ARM64 RELEASE
 on:
   push:
   workflow_dispatch:
+concurrency:
+  group: traderdesk-release-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
@@ -10,11 +13,11 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
-      - name: Inspect source without changing application
+      - name: Extract and inspect source
         run: |
           python3 - <<'PY'
           import pathlib, zipfile, hashlib, re, os
-          p = pathlib.Path('TraderDesk_Android_Project_v1.6.1_SOURCE.zip')
+          p = pathlib.Path('TraderDesk_Android_Project_v1.6.2+48_SOURCE.zip')
           root = pathlib.Path('release-source').resolve()
           root.mkdir()
           with zipfile.ZipFile(p) as z:
@@ -24,9 +27,8 @@ jobs:
           projects = [f.parent for f in root.rglob('pubspec.yaml') if (f.parent / 'android').is_dir() and (f.parent / 'lib').is_dir()]
           assert len(projects) == 1, 'Expected one Flutter Android project'
           project = projects[0]
-          text = (project / 'pubspec.yaml').read_text()
-          m = re.search(r'^version:\s*[\"\']?([^\s\"\']+)', text, re.M)
-          assert m and re.fullmatch(r'1\.6\.1(?:\+[0-9]+)?', m.group(1)), 'Expected internal version 1.6.1'
+          m = re.search(r'^version:\s*[\"\']?([^\s\"\']+)', (project / 'pubspec.yaml').read_text(), re.M)
+          assert m and m.group(1) == '1.6.2+48', 'Expected internal version 1.6.2+48'
           (project / 'android/local.properties').unlink(missing_ok=True)
           with open(os.environ['GITHUB_ENV'], 'a') as env:
               env.write(f'PROJECT_DIR={project}\nAPP_VERSION={m.group(1)}\n')
@@ -49,7 +51,8 @@ jobs:
         with:
           channel: stable
           flutter-version: '3.47.7'
-      - name: Build release AOT ARM64
+          cache: true
+      - name: Build Release AOT ARM64 only
         shell: bash
         run: |
           set -euo pipefail
@@ -60,7 +63,7 @@ jobs:
             flutter pub get --enforce-lockfile
             flutter build apk --release --target-platform android-arm64 --no-pub --no-tree-shake-icons --split-debug-info="$GITHUB_WORKSPACE/symbols"
           } 2>&1 | tee "$GITHUB_WORKSPACE/RELEASE_BUILD.log"
-      - name: Verify release ABI and record actual size
+      - name: Verify and measure
         run: |
           python3 - <<'PY'
           import pathlib, os, zipfile, hashlib, json, subprocess
@@ -68,9 +71,9 @@ jobs:
           assert src.is_file(), 'Release APK missing'
           with zipfile.ZipFile(src) as z:
               abis = {p.split('/')[1] for p in z.namelist() if p.startswith('lib/') and p.endswith('.so')}
-          assert abis == {'arm64-v8a'}, f'Unexpected ABIs: {abis}'
-          sdk = pathlib.Path(os.environ['ANDROID_HOME'])
-          tool = sdk / 'build-tools/36.0.0'
+              assert abis == {'arm64-v8a'}, f'Unexpected ABIs: {abis}'
+              assert 'lib/arm64-v8a/libapp.so' in z.namelist(), 'AOT library missing'
+          tool = pathlib.Path(os.environ['ANDROID_HOME']) / 'build-tools/36.0.0'
           badging = subprocess.check_output([str(tool / 'aapt'), 'dump', 'badging', str(src)], text=True)
           assert 'application-debuggable' not in badging, 'Debuggable APK rejected'
           out = pathlib.Path('release-apk')
@@ -86,21 +89,21 @@ jobs:
           with open('SIGNING_REPORT.txt', 'w') as report:
               subprocess.run([str(tool / 'apksigner'), 'verify', '--print-certs', str(dst)], check=True, stdout=report)
           with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
-              summary.write(f'## ARM64 Release\nFile: `{name}`\n\nSize: {metadata["MiB"]} MiB ({metadata["bytes"]} bytes)\n\nNon-debuggable; certificate details in SIGNING_REPORT.txt. Runtime feature preservation still requires application testing.\n')
+              summary.write(f'## ARM64 Release\nFile: `{name}`\n\nSize: {metadata["MiB"]} MiB ({metadata["bytes"]} bytes)\n\nAOT library present; non-debuggable; ARM64 only. Certificate identity in SIGNING_REPORT.txt. Runtime feature preservation requires application testing.\n')
           PY
       - uses: actions/upload-artifact@v4
         id: apk
         with:
-          name: TraderDesk-1.6.1-ARM64-RELEASE-${{ github.run_number }}
+          name: TraderDesk-1.6.2-ARM64-RELEASE-${{ github.run_number }}
           path: release-apk/*
           if-no-files-found: error
-      - name: Record artifact link
+      - name: Record artifact download link
         run: |
           echo 'Download: ${{ steps.apk.outputs.artifact-url }}' >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: TraderDesk-1.6.1-diagnostics-${{ github.run_number }}
+          name: TraderDesk-1.6.2-diagnostics-${{ github.run_number }}
           path: |
             INSPECTION.txt
             RELEASE_BUILD.log
