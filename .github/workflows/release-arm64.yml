@@ -1,4 +1,4 @@
-name: TraderDesk 1.7.0 ARM64 RELEASE
+name: TraderDesk 1.7.1 ARM64 RELEASE
 on:
   push:
   workflow_dispatch:
@@ -17,7 +17,7 @@ jobs:
         run: |
           python3 - <<'PY'
           import pathlib, zipfile, hashlib, re, os
-          p = pathlib.Path('TraderDesk_Android_Project_v1_7_0_SOURCE.zip')
+          p = pathlib.Path('TraderDesk_Android_Project_v1_7_1_Claude_SOURCE.zip')
           root = pathlib.Path('release-source').resolve()
           root.mkdir()
           with zipfile.ZipFile(p) as z:
@@ -28,7 +28,7 @@ jobs:
           assert len(projects) == 1, 'Expected one Flutter Android project'
           project = projects[0]
           m = re.search(r'^version:\s*[\"\']?([^\s\"\']+)', (project / 'pubspec.yaml').read_text(), re.M)
-          assert m and re.fullmatch(r'1\.7\.0(?:\+[0-9]+)?', m.group(1)), 'Expected internal version 1.7.0'
+          assert m and re.fullmatch(r'1\.7\.1(?:\+[0-9]+)?', m.group(1)), 'Expected internal version 1.7.1'
           (project / 'android/local.properties').unlink(missing_ok=True)
           with open(os.environ['GITHUB_ENV'], 'a') as env:
               env.write(f'PROJECT_DIR={project}\nAPP_VERSION={m.group(1)}\n')
@@ -94,7 +94,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         id: apk
         with:
-          name: TraderDesk-1.7.0-ARM64-RELEASE-${{ github.run_number }}
+          name: TraderDesk-1.7.1-ARM64-RELEASE-${{ github.run_number }}
           path: release-apk/*
           if-no-files-found: error
       - name: Record artifact download link
@@ -103,7 +103,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: TraderDesk-1.7.0-diagnostics-${{ github.run_number }}
+          name: TraderDesk-1.7.1-diagnostics-${{ github.run_number }}
           path: |
             INSPECTION.txt
             RELEASE_BUILD.log
