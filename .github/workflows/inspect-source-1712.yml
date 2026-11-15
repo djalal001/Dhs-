@@ -1,0 +1,100 @@
+name: Inspect TraderDesk 1.7.12+68 source
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/inspect-source-1712.yml'
+      - 'TraderDesk_Android_Project_v1.7.12+68_GPT_SOURCE.zip'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: inspect-traderdesk-1712
+  cancel-in-progress: false
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Read archive without executing project code
+        run: |
+          python3 - <<'PY'
+          import pathlib, zipfile, hashlib, json, os, stat
+          archive = pathlib.Path('TraderDesk_Android_Project_v1.7.12+68_GPT_SOURCE.zip')
+          data = archive.read_bytes()
+          blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
+          assert blob == 'f370d4cdefbb2d7f8a97d2b39c9ceb964172ed97', 'Archive changed; review required'
+          out = pathlib.Path('.inspection/1.7.12+68') / os.environ['GITHUB_RUN_ID']
+          out.mkdir(parents=True, exist_ok=False)
+          excluded = {'.git', '.dart_tool', 'build', '.gradle', 'node_modules'}
+          index, copied, skipped = [], [], []
+          with zipfile.ZipFile(archive) as z:
+              entries = z.infolist()
+              assert len(entries) <= 20000, 'Too many entries'
+              assert sum(e.file_size for e in entries) <= 1073741824, 'Archive too large'
+              assert z.testzip() is None, 'Corrupt archive'
+              projects = []
+              names = {e.filename for e in entries}
+              for e in entries:
+                  p = pathlib.PurePosixPath(e.filename)
+                  assert not p.is_absolute() and '..' not in p.parts and '\\' not in e.filename, 'Unsafe path'
+                  assert not stat.S_ISLNK(e.external_attr >> 16), 'Symlink rejected'
+                  if p.name == 'pubspec.yaml':
+                      prefix = '' if str(p.parent) == '.' else str(p.parent) + '/'
+                      if any(n.startswith(prefix + 'lib/') for n in names) and any(n.startswith(prefix + 'android/') for n in names):
+                          projects.append(prefix)
+              assert len(projects) == 1, str(projects)
+              prefix = projects[0]
+              seen = set()
+              for e in entries:
+                  if e.is_dir():
+                      continue
+                  assert e.filename not in seen, 'Duplicate archive entry'
+                  seen.add(e.filename)
+                  raw = z.read(e)
+                  index.append(dict(path=e.filename, bytes=len(raw), sha256=hashlib.sha256(raw).hexdigest()))
+                  if not e.filename.startswith(prefix):
+                      continue
+                  rel = pathlib.PurePosixPath(e.filename[len(prefix):])
+                  if any(part in excluded for part in rel.parts):
+                      continue
+                  selected = str(rel) in {'pubspec.yaml', 'pubspec.lock', '.metadata'} or (rel.parts[0] in {'lib', 'test'} and rel.suffix == '.dart') or (rel.parts[0] == 'android' and (rel.suffix in {'.gradle', '.kts', '.xml', '.pro', '.kt', '.java'} or rel.name == 'gradle-wrapper.properties'))
+                  if not selected:
+                      continue
+                  if len(raw) > 2097152:
+                      skipped.append(dict(path=str(rel), reason='Text exceeds 2 MiB'))
+                      continue
+                  try:
+                      text = raw.decode('utf-8')
+                  except UnicodeDecodeError:
+                      skipped.append(dict(path=str(rel), reason='Not UTF-8'))
+                      continue
+                  dst = out / 'files' / str(rel)
+                  dst.parent.mkdir(parents=True, exist_ok=True)
+                  dst.write_text(text, encoding='utf-8')
+                  copied.append(str(rel))
+          report = dict(archive=archive.name, archive_sha256=hashlib.sha256(data).hexdigest(), archive_git_blob=blob, project_prefix=prefix, source_commit=os.environ['GITHUB_SHA'], run_url=os.environ['GITHUB_SERVER_URL'] + '/' + os.environ['GITHUB_REPOSITORY'] + '/actions/runs/' + os.environ['GITHUB_RUN_ID'], copied=copied, skipped=skipped, file_count=len(index), status='Source extracted for review; no build or functional verification performed')
+          (out / 'REPORT.json').write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding='utf-8')
+          (out / 'FILE_INDEX.json').write_text(json.dumps(index, indent=2, ensure_ascii=False), encoding='utf-8')
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f:
+              f.write(json.dumps(report, indent=2, ensure_ascii=False))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TraderDesk-source-inspection-${{ github.run_id }}
+          path: .inspection/1.7.12+68/
+          include-hidden-files: true
+          if-no-files-found: error
+      - name: Publish readable inspection files to main
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- '.inspection/1.7.12+68/'
+          git commit -m 'Publish TraderDesk 1.7.12+68 source inspection [skip ci]'
+          git pull --rebase origin main
+          git push origin HEAD:main
