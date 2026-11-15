@@ -18,13 +18,13 @@ jobs:
         run: |
           python3 - <<'PY'
           import pathlib, zipfile, hashlib, os, stat, json
-          archive = pathlib.Path('TraderDesk_Android_Project_v1.7.14+70_GPT_SOURCE.zip')
+          archive = pathlib.Path('TraderDesk_Android_Project_v1.7.15+71_GPT_SOURCE.zip')
           raw = archive.read_bytes()
           blob = hashlib.sha1(b'blob ' + str(len(raw)).encode() + b'\0' + raw).hexdigest()
-          assert blob == 'b20efe2d1d76e40f7f33a87ef0b6a0b54ad689cb', 'Source changed; review required'
+          assert blob == 'bebd127e60d1f430a9bd475055b4ea1894e00139', 'Source changed; review required'
           root = pathlib.Path('release-source').resolve()
           root.mkdir()
-          report = pathlib.Path('.inspection/1.7.14+70') / os.environ['GITHUB_RUN_ID']
+          report = pathlib.Path('.inspection/1.7.15+71') / os.environ['GITHUB_RUN_ID']
           report.mkdir(parents=True)
           with zipfile.ZipFile(archive) as z:
               entries = z.infolist()
@@ -108,10 +108,10 @@ jobs:
           assert 'application-debuggable' not in badging
           version = re.search(r"versionName='([^']+)'", badging).group(1)
           code = re.search(r"versionCode='([^']+)'", badging).group(1)
-          assert (version, code) == ('1.7.14', '70'), f'Unexpected version: {version}+{code}'
+          assert (version, code) == ('1.7.15', '71'), f'Unexpected version: {version}+{code}'
           out = pathlib.Path('release-apk')
           out.mkdir()
-          dst = out / 'TraderDesk-1.7.14+70-arm64-v8a-release.apk'
+          dst = out / 'TraderDesk-1.7.15+71-arm64-v8a-release.apk'
           shutil.copy2(src, dst)
           with open('SIGNING_REPORT.txt', 'w') as f:
               subprocess.run([str(tools / 'apksigner'), 'verify', '--print-certs', str(dst)], check=True, stdout=f)
@@ -123,7 +123,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         id: apk
         with:
-          name: TraderDesk-1.7.14+70-ARM64-RELEASE-${{ github.run_number }}
+          name: TraderDesk-1.7.15+71-ARM64-RELEASE-${{ github.run_number }}
           path: release-apk/*
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
@@ -135,7 +135,7 @@ jobs:
             APK_BADGING.txt
             SIGNING_REPORT.txt
             symbols/
-            .inspection/1.7.14+70/
+            .inspection/1.7.15+71/
           include-hidden-files: true
           if-no-files-found: warn
       - name: Publish source inspection and build result
@@ -148,7 +148,7 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           import pathlib, os, json, shutil
-          report = pathlib.Path('.inspection/1.7.14+70') / os.environ['GITHUB_RUN_ID']
+          report = pathlib.Path('.inspection/1.7.15+71') / os.environ['GITHUB_RUN_ID']
           report.mkdir(parents=True, exist_ok=True)
           result = dict(status=os.environ['BUILD_STATUS'], steps=json.loads(os.environ['STEPS_JSON']), artifact_url=os.environ.get('ARTIFACT_URL', ''), run_url=os.environ['GITHUB_SERVER_URL'] + '/' + os.environ['GITHUB_REPOSITORY'] + '/actions/runs/' + os.environ['GITHUB_RUN_ID'], source_commit=os.environ['GITHUB_SHA'])
           for name in ['RELEASE_BUILD.log', 'APK_BADGING.txt', 'SIGNING_REPORT.txt', 'release-apk/APK_INFO.json']:
@@ -159,7 +159,7 @@ jobs:
           PY
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -- ".inspection/1.7.14+70/$GITHUB_RUN_ID/"
-          git commit -m 'Publish TraderDesk 1.7.14+70 inspection and build result [skip ci]'
+          git add -- ".inspection/1.7.15+71/$GITHUB_RUN_ID/"
+          git commit -m 'Publish TraderDesk 1.7.15+71 inspection and build result [skip ci]'
           git pull --rebase origin "$GITHUB_REF_NAME"
           git push origin "HEAD:$GITHUB_REF_NAME"
