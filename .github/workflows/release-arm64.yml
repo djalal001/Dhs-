@@ -1,13 +1,10 @@
-name: TraderDesk GPT ARM64 Release
+name: TraderDesk ARM64 Release
 on: [push, workflow_dispatch]
 permissions:
   contents: write
 concurrency:
   group: traderdesk-release-${{ github.ref }}
   cancel-in-progress: true
-env:
-  VERSION: 1.7.25+81
-  REPORT: .inspection/1.7.25+81/${{ github.run_id }}
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -16,17 +13,15 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Verify and extract exact source
+      - name: Verify source and inspect configuration
         run: |
           python3 - <<'PY'
-          import pathlib, zipfile, hashlib, stat, os, shutil, json
-          archive = pathlib.Path('TraderDesk_Android_Project_v1.7.25+81_GPT_SOURCE.zip')
+          import pathlib, zipfile, hashlib, stat, os, json
+          archive = pathlib.Path('TraderDesk_Android_Project_v1.7.26+82_GPT_SOURCE.zip')
           raw = archive.read_bytes()
-          assert hashlib.sha1(b'blob ' + str(len(raw)).encode() + b'\0' + raw).hexdigest() == '49468aea86ca7cf2a8e980f11ee3dd185b787e7b', 'Source changed'
+          assert hashlib.sha1(b'blob ' + str(len(raw)).encode() + b'\0' + raw).hexdigest() == 'a8d2a0129fe12ef69f3f487d7cc715e78340565a'
           root = pathlib.Path('release-source').resolve()
           root.mkdir()
-          report = pathlib.Path(os.environ['REPORT'])
-          report.mkdir(parents=True)
           with zipfile.ZipFile(archive) as z:
               entries = z.infolist()
               assert len(entries) <= 20000 and sum(e.file_size for e in entries) <= 1073741824
@@ -41,29 +36,17 @@ jobs:
           projects = [p.parent for p in root.rglob('pubspec.yaml') if (p.parent / 'android').is_dir() and (p.parent / 'lib').is_dir()]
           assert len(projects) == 1
           project = projects[0]
-          index = []
-          for p in sorted(project.rglob('*')):
-              if not p.is_file():
-                  continue
-              rel = p.relative_to(project)
-              data = p.read_bytes()
-              index.append(dict(path=str(rel), bytes=len(data), sha256=hashlib.sha256(data).hexdigest()))
-              if any(s in {'.git', '.dart_tool', 'build', '.gradle'} for s in rel.parts):
-                  continue
-              if str(rel) in {'pubspec.yaml', 'pubspec.lock', '.metadata'} or (rel.parts[0] in {'lib', 'android', 'test'} and p.suffix in {'.dart', '.gradle', '.kts', '.xml', '.pro', '.properties'}):
-                  if len(data) <= 2097152:
-                      try:
-                          text = data.decode('utf-8')
-                      except UnicodeDecodeError:
-                          continue
-                      dest = report / 'files' / rel
-                      dest.parent.mkdir(parents=True, exist_ok=True)
-                      dest.write_text(text)
-          (report / 'FILE_INDEX.json').write_text(json.dumps(index, indent=2))
-          (report / 'SOURCE.json').write_text(json.dumps(dict(archive=archive.name, sha256=hashlib.sha256(raw).hexdigest(), commit=os.environ['GITHUB_SHA']), indent=2))
+          report = pathlib.Path('.inspection/1.7.26+82') / os.environ['GITHUB_RUN_ID']
+          report.mkdir(parents=True)
+          for p in project.rglob('*'):
+              if p.is_file() and (p.name in {'pubspec.yaml', 'pubspec.lock', 'gradle-wrapper.properties'} or p.suffix in {'.gradle', '.kts', '.pro'}):
+                  dest = report / 'configuration' / p.relative_to(project)
+                  dest.parent.mkdir(parents=True, exist_ok=True)
+                  dest.write_bytes(p.read_bytes())
+          (report / 'SOURCE.json').write_text(json.dumps({'archive': archive.name, 'sha256': hashlib.sha256(raw).hexdigest()}, indent=2))
           (project / 'android/local.properties').unlink(missing_ok=True)
           with open(os.environ['GITHUB_ENV'], 'a') as f:
-              f.write(f'PROJECT_DIR={project}\n')
+              f.write(f'PROJECT_DIR={project}\nREPORT={report}\n')
           PY
       - uses: actions/setup-java@v4
         with:
@@ -101,15 +84,15 @@ jobs:
           badging = subprocess.check_output([str(tools / 'aapt'), 'dump', 'badging', str(src)], text=True)
           pathlib.Path('APK_BADGING.txt').write_text(badging)
           assert 'application-debuggable' not in badging
-          assert re.search(r"versionName='([^']+)'", badging).group(1) == '1.7.25'
-          assert re.search(r"versionCode='([^']+)'", badging).group(1) == '81'
+          assert re.search(r"versionName='([^']+)'", badging).group(1) == '1.7.26'
+          assert re.search(r"versionCode='([^']+)'", badging).group(1) == '82'
           out = pathlib.Path('release-apk')
           out.mkdir()
-          dst = out / 'TraderDesk-1.7.25+81-arm64-v8a-release.apk'
+          dst = out / 'TraderDesk-1.7.26+82-arm64-v8a-release.apk'
           shutil.copy2(src, dst)
           with open('SIGNING_REPORT.txt', 'w') as f:
               subprocess.run([str(tools / 'apksigner'), 'verify', '--print-certs', str(dst)], check=True, stdout=f)
-          info = dict(filename=dst.name, bytes=dst.stat().st_size, MiB=round(dst.stat().st_size / 1048576, 2), sha256=hashlib.sha256(dst.read_bytes()).hexdigest(), versionName='1.7.25', versionCode='81')
+          info = dict(filename=dst.name, bytes=dst.stat().st_size, MiB=round(dst.stat().st_size / 1048576, 2), sha256=hashlib.sha256(dst.read_bytes()).hexdigest())
           (out / 'APK_INFO.json').write_text(json.dumps(info, indent=2))
           with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f:
               f.write(json.dumps(info, indent=2))
@@ -117,7 +100,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         id: apk
         with:
-          name: TraderDesk-1.7.25+81-ARM64-RELEASE-${{ github.run_number }}
+          name: TraderDesk-1.7.26+82-ARM64-RELEASE-${{ github.run_number }}
           path: release-apk/*
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
@@ -129,10 +112,10 @@ jobs:
             APK_BADGING.txt
             SIGNING_REPORT.txt
             symbols/
-            .inspection/1.7.25+81/
+            .inspection/1.7.26+82/
           include-hidden-files: true
           if-no-files-found: warn
-      - name: Publish inspection and result
+      - name: Publish result
         if: always()
         env:
           STEPS_JSON: ${{ toJSON(steps) }}
@@ -142,7 +125,7 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           import pathlib, os, json, shutil
-          report = pathlib.Path(os.environ['REPORT'])
+          report = pathlib.Path('.inspection/1.7.26+82') / os.environ['GITHUB_RUN_ID']
           report.mkdir(parents=True, exist_ok=True)
           for name in ['RELEASE_BUILD.log', 'APK_BADGING.txt', 'SIGNING_REPORT.txt', 'release-apk/APK_INFO.json']:
               p = pathlib.Path(name)
@@ -153,7 +136,7 @@ jobs:
           PY
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -- "$REPORT/"
-          git commit -m 'Publish TraderDesk 1.7.25+81 inspection and build result [skip ci]'
+          git add -- .inspection/1.7.26+82/
+          git commit -m 'Publish TraderDesk 1.7.26+82 build result [skip ci]'
           git pull --rebase origin "$GITHUB_REF_NAME"
           git push origin "HEAD:$GITHUB_REF_NAME"
