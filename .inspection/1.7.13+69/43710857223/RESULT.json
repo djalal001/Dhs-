@@ -1,0 +1,64 @@
+{
+  "status": "success",
+  "steps": {
+    "inspect": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "java": {
+      "outputs": {
+        "distribution": "Temurin-Hotspot",
+        "path": "/opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.13-9/x64",
+        "version": "21.0.13+9"
+      },
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "android": {
+      "outputs": {
+        "ANDROID_COMMANDLINE_TOOLS_VERSION": "12266719"
+      },
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "flutter": {
+      "outputs": {
+        "CHANNEL": "stable",
+        "VERSION": "3.47.7",
+        "ARCHITECTURE": "x64",
+        "CACHE-KEY": "flutter-linux-stable-3.47.7-x64-abaf9c523780a608bd46686fd5e53740a07077f8",
+        "CACHE-PATH": "/opt/hostedtoolcache/flutter/stable-3.47.7-x64",
+        "PUB-CACHE-KEY": "flutter-pub-linux-stable-3.47.7-x64-abaf9c523780a608bd46686fd5e53740a07077f8",
+        "PUB-CACHE-PATH": "/home/runner/.pub-cache",
+        "GIT_SOURCE": "",
+        "CACHE-HIT": "true",
+        "PUB-CACHE-HIT": ""
+      },
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "build": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "verify": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "apk": {
+      "outputs": {
+        "artifact-id": "14159994823",
+        "artifact-digest": "68103d16ed879167d8f3496e4804360759ef886411c4680455f5e656e4cfdbac",
+        "artifact-url": "https://github.com/djalal001/Dhs-/actions/runs/43710857223/artifacts/14159994823"
+      },
+      "outcome": "success",
+      "conclusion": "success"
+    }
+  },
+  "artifact_url": "https://github.com/djalal001/Dhs-/actions/runs/43710857223/artifacts/14159994823",
+  "run_url": "https://github.com/djalal001/Dhs-/actions/runs/43710857223",
+  "source_commit": "9367344864df1bd3d664928190672969ab082713"
+}
