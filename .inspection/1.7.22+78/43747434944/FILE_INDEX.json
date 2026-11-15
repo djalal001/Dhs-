@@ -1,0 +1,772 @@
+[
+  {
+    "path": ".github/copilot-instructions.md",
+    "bytes": 1524,
+    "sha256": "c9703dcc7b1716255b2e27c4d62a0de9e190633a893c42d5267f00eb6ee80d60"
+  },
+  {
+    "path": ".github/workflows/android-build.yml",
+    "bytes": 3039,
+    "sha256": "a79a3f0787801713d60e86c434b14bbdde32d11f93c2056ffbb7f8c926aa12db"
+  },
+  {
+    "path": ".gitignore",
+    "bytes": 217,
+    "sha256": "70e905159b76556e3809eb932d3271f9f6da379b4998ee33f1a1dd483f79f779"
+  },
+  {
+    "path": "AGENTS.md",
+    "bytes": 2082,
+    "sha256": "57c9d0d486deeb56e707a25ec4e0151198e86e02a5ff63fb47a0bcc4f4b72077"
+  },
+  {
+    "path": "ANALYSIS_AR.md",
+    "bytes": 13004,
+    "sha256": "855049f4ef27aa45d4064f150275a02185dc639348625102fdb0c1e64094d608"
+  },
+  {
+    "path": "ASSET_INVENTORY.txt",
+    "bytes": 2298,
+    "sha256": "2e6e23a60536004f1c7c86fdcaed0ed55e2a23d8d72e3ae55d3b14dfde07a0bf"
+  },
+  {
+    "path": "BEHAVIOR_LAB_ANALYSIS_AR.md",
+    "bytes": 9941,
+    "sha256": "723bf13bc18de57900b6331a96b32e870b4dc3c7c0cdf39357f8e7d2780d5330"
+  },
+  {
+    "path": "BUILD_INFO_AR.md",
+    "bytes": 863,
+    "sha256": "804ee7b92405c23391643d67625bb5d0eb7a17108f80d9786e8d5ceca5ea3834"
+  },
+  {
+    "path": "BUILD_INSTRUCTIONS_AR.md",
+    "bytes": 3493,
+    "sha256": "a87a507c4545f2b3d5b442a6750889e511b6d26659e5aef674652fcb6c31e370"
+  },
+  {
+    "path": "FINAL_REVIEW_AR.md",
+    "bytes": 5731,
+    "sha256": "7939bcb87e145d11461928d96f70a25585a9d47d7e9d4c8717357ec4d78ab6cc"
+  },
+  {
+    "path": "INSPECTION_AND_IMPLEMENTATION_AR.md",
+    "bytes": 19339,
+    "sha256": "58cc03caeb6fa4868e08d6c19e03c1b7519b7ba7cebeda9302cbc53ae4500d1e"
+  },
+  {
+    "path": "PACKAGE_INFO_AR.md",
+    "bytes": 8775,
+    "sha256": "5e965fca916e32db7cffb08b91631032453fbe3669db2bee462cd17ee89fd7c1"
+  },
+  {
+    "path": "QA_REPORT_AR.md",
+    "bytes": 24374,
+    "sha256": "281c546070db356a34d6b8f2663172860a0a1eae4427aedfb60c9338a0400035"
+  },
+  {
+    "path": "README.md",
+    "bytes": 14036,
+    "sha256": "15daf499590c5db84bf84c1b529c4596067c3edcc0c81f30775cc5f4c5caae96"
+  },
+  {
+    "path": "RELEASE_NOTES_AR.md",
+    "bytes": 932,
+    "sha256": "47688e32f72490b471b6eb38819ce383ccd15db757fe25a5dbb3ffda8dde35e3"
+  },
+  {
+    "path": "RESUME_AR.md",
+    "bytes": 2654,
+    "sha256": "d67ac1de5cd0c86fd64ee0ae6327bab6d1b44c3a502b75d1daf61c4d5eef284e"
+  },
+  {
+    "path": "RESUME_AR_1.3.8_build33.md",
+    "bytes": 2094,
+    "sha256": "56dedea4dcc0faeb515ff52549f524ce391980185734f1fb19b71819db6a04ed"
+  },
+  {
+    "path": "SIZE_OPTIMIZATION_AR.md",
+    "bytes": 2890,
+    "sha256": "5e0815ec5547fe1858ebf794d88fd86b2eac0460bde583bebf2e8b40f0c55770"
+  },
+  {
+    "path": "VERIFIED_ASSET_INVENTORY_AR.txt",
+    "bytes": 1869,
+    "sha256": "ca0d451b5b036e7e178812be76782dbb826d8cffb71b2d6a4380a0e15beb4e13"
+  },
+  {
+    "path": "android/.gitignore",
+    "bytes": 145,
+    "sha256": "4fbbeb537ab802e77dab14890d1ad75589cc2ba938bdea70d1788f797a78cfa6"
+  },
+  {
+    "path": "android/app/build.gradle.kts",
+    "bytes": 2227,
+    "sha256": "455c936497c9472af0bdeb2de10714bb66b33cb90a3e7f86ebca2fe683d8084e"
+  },
+  {
+    "path": "android/app/src/debug/AndroidManifest.xml",
+    "bytes": 378,
+    "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b"
+  },
+  {
+    "path": "android/app/src/main/AndroidManifest.xml",
+    "bytes": 2217,
+    "sha256": "6e1b816ed1a0120b074ffa5b52538889b8554104610c9940acc1ebefe88e7b32"
+  },
+  {
+    "path": "android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java",
+    "bytes": 1833,
+    "sha256": "97246c9f5d9aeeb9f19d5efe4e7525d84460eda55151781e5d64dc00f1f7ee08"
+  },
+  {
+    "path": "android/app/src/main/kotlin/com/traderdesk/trader_desk/MainActivity.kt",
+    "bytes": 128,
+    "sha256": "2376fe54229248b481385f0c0bd2216efbcf7c1cbb0a5b797da98e934044786d"
+  },
+  {
+    "path": "android/app/src/main/res/drawable/ic_traderdesk.xml",
+    "bytes": 933,
+    "sha256": "d5c2cf2a259525070547410889f8664f5aa804c7d14e854b01ef2d4f6c1d4e57"
+  },
+  {
+    "path": "android/app/src/main/res/drawable/launch_background.xml",
+    "bytes": 434,
+    "sha256": "94433756fe10005ddd6fc55cc5c0b1e9f3c10b66a08ceac795ece6713d34e28a"
+  },
+  {
+    "path": "android/app/src/main/res/drawable-v21/launch_background.xml",
+    "bytes": 438,
+    "sha256": "7ca6d5cec2169c5a98661a119db23a6f3399c8fef2256ff04f3a642831282478"
+  },
+  {
+    "path": "android/app/src/main/res/mipmap-hdpi/ic_launcher.png",
+    "bytes": 544,
+    "sha256": "6a7c8f0d703e3682108f9662f813302236240d3f8f638bb391e32bfb96055fef"
+  },
+  {
+    "path": "android/app/src/main/res/mipmap-mdpi/ic_launcher.png",
+    "bytes": 442,
+    "sha256": "c7c0c0189145e4e32a401c61c9bdc615754b0264e7afae24e834bb81049eaf81"
+  },
+  {
+    "path": "android/app/src/main/res/mipmap-xhdpi/ic_launcher.png",
+    "bytes": 721,
+    "sha256": "e14aa40904929bf313fded22cf7e7ffcbf1d1aac4263b5ef1be8bfce650397aa"
+  },
+  {
+    "path": "android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png",
+    "bytes": 1031,
+    "sha256": "4d470bf22d5c17d84edc5f82516d1ba8a1c09559cd761cefb792f86d9f52b540"
+  },
+  {
+    "path": "android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
+    "bytes": 1443,
+    "sha256": "3c34e1f298d0c9ea3455d46db6b7759c8211a49e9ec6e44b635fc5c87dfb4180"
+  },
+  {
+    "path": "android/app/src/main/res/values/styles.xml",
+    "bytes": 996,
+    "sha256": "937d7c82f539c72eb94fd3a3773f29b3d3fef1997213c92cb632298cedf4bda9"
+  },
+  {
+    "path": "android/app/src/main/res/values-night/styles.xml",
+    "bytes": 995,
+    "sha256": "8c5bad5152f217e837519f9c15211d19f39bd45f5f67faf6dd81cb4b299e518f"
+  },
+  {
+    "path": "android/app/src/profile/AndroidManifest.xml",
+    "bytes": 378,
+    "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b"
+  },
+  {
+    "path": "android/build.gradle.kts",
+    "bytes": 537,
+    "sha256": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba"
+  },
+  {
+    "path": "android/gradle/wrapper/gradle-wrapper.jar",
+    "bytes": 53636,
+    "sha256": "16caeaf66d57a0d1d2087fef6a97efa62de8da69afa5b908f40db35afc4342da"
+  },
+  {
+    "path": "android/gradle/wrapper/gradle-wrapper.properties",
+    "bytes": 202,
+    "sha256": "b690d26223576fe4e63889fad9a00df81945cb870b9476cc5a563152a1a88a74"
+  },
+  {
+    "path": "android/gradle.properties",
+    "bytes": 428,
+    "sha256": "74ec949161b47f8270358997126d689c8a6f5219674ab1831303b6c6393545c8"
+  },
+  {
+    "path": "android/gradlew",
+    "bytes": 4971,
+    "sha256": "ec56c02543666d92d9ac5ae7fcc48f88ce4de0deb8b7f9b39928ca46f68c1b2b"
+  },
+  {
+    "path": "android/gradlew.bat",
+    "bytes": 2404,
+    "sha256": "c13c6e91b9a517783976de213d46398c661ea9e17651376d7301e839eaedcc62"
+  },
+  {
+    "path": "android/settings.gradle.kts",
+    "bytes": 770,
+    "sha256": "016759283e88ade6eba92910583feeef88b962839b957aa414296afd2952d122"
+  },
+  {
+    "path": "android/trader_desk_android.iml",
+    "bytes": 1601,
+    "sha256": "90d961bc4ccb4b0ae3f75ce495c273f08745a55c50bd213e259723fc341d0193"
+  },
+  {
+    "path": "assets/emojis/commitment/autoExitAtTarget.webp",
+    "bytes": 104684,
+    "sha256": "34649a69d6ce92b6f13383169ac493a5266d88445e994a352b0c4165b457c978"
+  },
+  {
+    "path": "assets/emojis/commitment/breakevenStopToEntry.webp",
+    "bytes": 108920,
+    "sha256": "42fbe3cfa12b4532c8ae17ac9b4fda8b80ada3ad79bf360faa7571bd58ad3e4b"
+  },
+  {
+    "path": "assets/emojis/commitment/enteredDespiteFear.webp",
+    "bytes": 226838,
+    "sha256": "0c3c44dc5c7c2aebb6a188f736069cfdbe8fc146907d14d260b948413a6c44e5"
+  },
+  {
+    "path": "assets/emojis/commitment/fullPlanCompliance.webp",
+    "bytes": 244326,
+    "sha256": "6dbadae8679b502db6021d786a9dc9293813cd59269e7a7b3fa737f05c2aa240"
+  },
+  {
+    "path": "assets/emojis/commitment/manualExitNearTarget.webp",
+    "bytes": 120346,
+    "sha256": "c20e1a952cba7ee6a3c99ef69e88b53c8a86418ca5841d306014353f2807c4b9"
+  },
+  {
+    "path": "assets/emojis/decisions/decision-enteredEarly.gif",
+    "bytes": 135707,
+    "sha256": "d3b2c154a562456ec4cff5db85a331d2ae5a2619a3e60cb75036f2ae38e05b69"
+  },
+  {
+    "path": "assets/emojis/decisions/decision-exitedEarlyBecauseFearOfLosingProfit.gif",
+    "bytes": 135567,
+    "sha256": "8f5c592fe882dd4bad05c5261d32a9d23cbfc2c099a32c66f1b8f7100721d68f"
+  },
+  {
+    "path": "assets/emojis/decisions/decision-hesitationPartialSize.gif",
+    "bytes": 119150,
+    "sha256": "6bb25bf73854dbee17de6f7a35c34cfb66219931ccd424323129503b2ad77e0e"
+  },
+  {
+    "path": "assets/emojis/decisions/decision-lateEntry.gif",
+    "bytes": 117448,
+    "sha256": "16509961622c08c90fcdd83a37aa0b81675aa627b1ae1479e585d0673fe7c3fa"
+  },
+  {
+    "path": "assets/emojis/decisions/decision-missedHigherTimeframeBounceArea.gif",
+    "bytes": 123058,
+    "sha256": "cc5c2033175741b3cb26decd4158523e0b673d066f788b30aee473a2e758de63"
+  },
+  {
+    "path": "assets/emojis/decisions/decision-missedHigherTimeframeTrendlineIntegration.webp",
+    "bytes": 24070,
+    "sha256": "d969dcccf884287d71ef59a194ab58444c913a465494c0143210f6d4e68b2999"
+  },
+  {
+    "path": "assets/emojis/decisions/decision-missedLowerTimeframeBounceArea.gif",
+    "bytes": 98650,
+    "sha256": "9dff362b5b0dac7a48829828e7f9dc68597d6879a7200c92b5dd313fee205ce2"
+  },
+  {
+    "path": "assets/emojis/decisions/decision-missedTrendlineFromCandleWicks.gif",
+    "bytes": 143144,
+    "sha256": "20e36a53accf041b6b10b8d9a76e3118a1053ed7d7e12f89a010ebce33539fff"
+  },
+  {
+    "path": "assets/emojis/decisions/decision-noBreakoutPositiveClose.gif",
+    "bytes": 182896,
+    "sha256": "0f76dc3195422997bd17d7911e5ed5b428bd624be2cded9a0e88abe48d3dac95"
+  },
+  {
+    "path": "assets/emojis/decisions/decision-noTrendlineSupportsEntryZone.webp",
+    "bytes": 30720,
+    "sha256": "0af70b8d2d85d6d5be20ddcff7f903ad4e98bc7460a10adbabe23c358440118b"
+  },
+  {
+    "path": "assets/emojis/decisions/decision-partialSizeAwaitingDeepCorrection.webp",
+    "bytes": 30180,
+    "sha256": "037520c6b0797ba10d16d451e525c64c39e9c968d2524ca8bf5f3dcce6a76a78"
+  },
+  {
+    "path": "assets/emojis/decisions/decision-stopLossIncreasedForLiquiditySafety.webp",
+    "bytes": 35642,
+    "sha256": "10575dd2526a3bb5b2b76175a0fe1777c4fcd3a5a940a20b18b1f47a0cee92fe"
+  },
+  {
+    "path": "assets/emojis/decisions/decision-stopLossIncreasedWithoutReason.webp",
+    "bytes": 504556,
+    "sha256": "0daae82ca5336557bf1d87a789063e85eaa3c9385ef78cb9e85a2ea22c3b5fa5"
+  },
+  {
+    "path": "assets/emojis/decisions/decision-stopLossReducedForNegativeClose.webp",
+    "bytes": 30092,
+    "sha256": "dd8783b18b8595fae3576b2bdcff092c1db150389d46759a1983d9508cdbb3ab"
+  },
+  {
+    "path": "assets/emojis/decisions/decision-stopLossReducedWithoutReason.webp",
+    "bytes": 504896,
+    "sha256": "1257a87de7bf4338434d5d761c3d787514e946ff2a07514e403c8312c555dc65"
+  },
+  {
+    "path": "assets/emojis/emoji-avoided-entry-fear.gif",
+    "bytes": 192660,
+    "sha256": "e795ff6e804e25f78dd378ee96d0815d31ec435de387ae93819d4f8c49024545"
+  },
+  {
+    "path": "assets/emojis/emoji-avoided-entry-fear.svg",
+    "bytes": 2339,
+    "sha256": "f55f440498c89efe00eb204413f64b8b8ececa92906d70b497501d592599b520"
+  },
+  {
+    "path": "assets/emojis/emoji-entered-early.gif",
+    "bytes": 135707,
+    "sha256": "d3b2c154a562456ec4cff5db85a331d2ae5a2619a3e60cb75036f2ae38e05b69"
+  },
+  {
+    "path": "assets/emojis/emoji-entered-early.svg",
+    "bytes": 1384,
+    "sha256": "d97312309fcbbb45b10ef2dde97c2fb0de22590414c4896d573349f38a48c9f1"
+  },
+  {
+    "path": "assets/emojis/emoji-entry-conditions-not-met.gif",
+    "bytes": 148652,
+    "sha256": "f13bfc2597e795c14d45bfbef08c8427f22e4fad42bfc38f431d80c947c0ed7f"
+  },
+  {
+    "path": "assets/emojis/emoji-entry-conditions-not-met.svg",
+    "bytes": 1382,
+    "sha256": "4c2e505b31120367401778ee9c43bb55f9d0c93008697bdfa886ebf053be49fd"
+  },
+  {
+    "path": "assets/emojis/emoji-executed-per-plan.gif",
+    "bytes": 186172,
+    "sha256": "1ce661491b972a4c1f139077b6d4aa8e104e88a3b2bf869d696abacd449dad09"
+  },
+  {
+    "path": "assets/emojis/emoji-executed-per-plan.svg",
+    "bytes": 1288,
+    "sha256": "e712c85cf5c2316f99f624f4e69e1ed3067a83abbaf42613d22474fa28e6eb43"
+  },
+  {
+    "path": "assets/emojis/emoji-exited-early-target.gif",
+    "bytes": 135567,
+    "sha256": "8f5c592fe882dd4bad05c5261d32a9d23cbfc2c099a32c66f1b8f7100721d68f"
+  },
+  {
+    "path": "assets/emojis/emoji-exited-early-target.svg",
+    "bytes": 310929,
+    "sha256": "e11fd5d4de9de8f304c15534b76ea396326f7e12636f356f3290112974d7c96e"
+  },
+  {
+    "path": "assets/emojis/emoji-hesitation-partial-size.gif",
+    "bytes": 119150,
+    "sha256": "6bb25bf73854dbee17de6f7a35c34cfb66219931ccd424323129503b2ad77e0e"
+  },
+  {
+    "path": "assets/emojis/emoji-hesitation-partial-size.svg",
+    "bytes": 1274,
+    "sha256": "6cff9932ce84192dc34a77a200647815fea8bb8f39b6a2858df56bee82dc4f82"
+  },
+  {
+    "path": "assets/emojis/emoji-late-entry.gif",
+    "bytes": 117448,
+    "sha256": "16509961622c08c90fcdd83a37aa0b81675aa627b1ae1479e585d0673fe7c3fa"
+  },
+  {
+    "path": "assets/emojis/emoji-late-entry.svg",
+    "bytes": 1189,
+    "sha256": "878384e17c6b998f4f0376da7516750e6355d5839398a8db4cd27e12bb6e240d"
+  },
+  {
+    "path": "assets/emojis/emoji-missed-htf-bounce-zone.gif",
+    "bytes": 123058,
+    "sha256": "cc5c2033175741b3cb26decd4158523e0b673d066f788b30aee473a2e758de63"
+  },
+  {
+    "path": "assets/emojis/emoji-missed-htf-bounce-zone.svg",
+    "bytes": 1226,
+    "sha256": "f3281c2012818a7d81c39cd163688759e97c6f7a341ed1e3dd21e187f203f82c"
+  },
+  {
+    "path": "assets/emojis/emoji-missed-ltf-bounce-zone.gif",
+    "bytes": 98650,
+    "sha256": "9dff362b5b0dac7a48829828e7f9dc68597d6879a7200c92b5dd313fee205ce2"
+  },
+  {
+    "path": "assets/emojis/emoji-missed-ltf-bounce-zone.svg",
+    "bytes": 1844,
+    "sha256": "d2cdf423ccd2b5b197b5674b91c2a3f8e151bb8faf2a69ad647caf654311f694"
+  },
+  {
+    "path": "assets/emojis/emoji-missed-wick-trendline.gif",
+    "bytes": 143144,
+    "sha256": "20e36a53accf041b6b10b8d9a76e3118a1053ed7d7e12f89a010ebce33539fff"
+  },
+  {
+    "path": "assets/emojis/emoji-missed-wick-trendline.svg",
+    "bytes": 1762,
+    "sha256": "b06081cfd4725e90f490770696d136fece4b7a069dbf8759060200753144c505"
+  },
+  {
+    "path": "assets/emojis/emoji-no-breakout-positive-close.gif",
+    "bytes": 182896,
+    "sha256": "0f76dc3195422997bd17d7911e5ed5b428bd624be2cded9a0e88abe48d3dac95"
+  },
+  {
+    "path": "assets/emojis/emoji-stop-loss-moved.gif",
+    "bytes": 104991,
+    "sha256": "87cfa8a94a274839659bf2e04f2389d03a920435d5e098fb684aa4aeb725618f"
+  },
+  {
+    "path": "assets/emojis/emoji-stop-loss-moved.svg",
+    "bytes": 1115,
+    "sha256": "2a0ed83085e7d15771bd956dac839d612e83749b2cd4cdac2cae235a934141a7"
+  },
+  {
+    "path": "assets/emojis/no_entry/fearGivingBackProfit.webp",
+    "bytes": 626878,
+    "sha256": "1477769616ff693a56a3ccfcd23145a0791fb3f948ca818995c0905ce0323425"
+  },
+  {
+    "path": "assets/emojis/no_entry/fearLossNoHistory.webp",
+    "bytes": 823456,
+    "sha256": "b63768e9278d3944ff253ac45a92e413282d8506c38aee6f7eb7493352c7f961"
+  },
+  {
+    "path": "assets/emojis/no_entry/fearRepeatLossAfterLoss.webp",
+    "bytes": 539724,
+    "sha256": "120128ff8c6209ce0e3754c9819feacc280e4ba788dc725a556495ae74da7e7c"
+  },
+  {
+    "path": "assets/emojis/no_entry/hesitationUnclearScenario.webp",
+    "bytes": 600648,
+    "sha256": "422ad9874f88dccec7d52bb5dcb36ad6aca804c3c99ee027a09918604160ed76"
+  },
+  {
+    "path": "assets/emojis/no_entry/waitedDeeperRetestDespiteConfirmation.webp",
+    "bytes": 627194,
+    "sha256": "a43705e127594c0d70238de59bc1811fde574dccc174dda9d47847775bfe71f5"
+  },
+  {
+    "path": "assets/fonts/IBMPlexSansArabic-Bold.ttf",
+    "bytes": 247896,
+    "sha256": "b74f809dead12442ed56e02a12c3bcc02076c9ad4e32f17d0a9ca6fc1aafc89e"
+  },
+  {
+    "path": "assets/fonts/IBMPlexSansArabic-Medium.ttf",
+    "bytes": 243028,
+    "sha256": "eef162792cf2a6ba5af7943af9f86843b1286ab67aaf615c18c07fd8e97a4a90"
+  },
+  {
+    "path": "assets/fonts/IBMPlexSansArabic-Regular.ttf",
+    "bytes": 236708,
+    "sha256": "8e0f1046c736bf939d4939ee3ae0116acf61cbcd6592deae7656761627080981"
+  },
+  {
+    "path": "assets/fonts/IBMPlexSansArabic-SemiBold.ttf",
+    "bytes": 245544,
+    "sha256": "1d4ab8b6ebadbb9d85f2ecdcb7cb0bb672420a8ff3388ab4f69d7b98056562aa"
+  },
+  {
+    "path": "assets/fonts/OFL.txt",
+    "bytes": 4456,
+    "sha256": "7e6b2818edbd8f6a01ae80641cc8f16a51080d08fb4e532be3a0b6f74adb07da"
+  },
+  {
+    "path": "design_tokens.json",
+    "bytes": 1328,
+    "sha256": "7a3e155bf1c0cf8a60f3b6beda2e384d1633770d68865f37daba1135ed0a6e56"
+  },
+  {
+    "path": "lib/data/local_store.dart",
+    "bytes": 12296,
+    "sha256": "bd8b50fde718cb10612521f711422823e8e63794351e9f30cb8082044d97b28d"
+  },
+  {
+    "path": "lib/data/streaming_backup_decoder.dart",
+    "bytes": 9905,
+    "sha256": "fc0ebcc19454b49f04271a5f5d66a9e7eae8225cfbbc109e4c12f4e39aac70a0"
+  },
+  {
+    "path": "lib/data/trade_file_service.dart",
+    "bytes": 2400,
+    "sha256": "d373141cc0f2f9959205a0c9fab85f71eab6d7bc10ef57f8be721518bd256dea"
+  },
+  {
+    "path": "lib/domain/risk_calculator.dart",
+    "bytes": 2389,
+    "sha256": "67b0481d07a0f3faabfb37198fba60d9379c11a41dc3f5993fad5f0630465113"
+  },
+  {
+    "path": "lib/domain/trade_analytics.dart",
+    "bytes": 2585,
+    "sha256": "cb141e5f8519dfc461e54b93383d5ef76087a439c0a0c9fe8a9a2f80fbce7768"
+  },
+  {
+    "path": "lib/domain/trade_csv_exporter.dart",
+    "bytes": 4047,
+    "sha256": "2a96b6044a63e589c56567cf5028236b85f010ba14f542ca3b932bd1ced4b072"
+  },
+  {
+    "path": "lib/domain/trade_entry_catalog.dart",
+    "bytes": 11805,
+    "sha256": "eb4608a69645e05128aaa824f1c06dc21e98f782073db3576e99540c71d8081a"
+  },
+  {
+    "path": "lib/domain/trade_ordering.dart",
+    "bytes": 464,
+    "sha256": "d65c5876239ef92b0ec921ea240114fb3182bce1f0eb0200364161883c98a9bc"
+  },
+  {
+    "path": "lib/l10n/app_strings.dart",
+    "bytes": 30897,
+    "sha256": "390b2bdcf538385847ad9f1f89c68b4b8c98b43e6125f3d3502179cbe71c440f"
+  },
+  {
+    "path": "lib/main.dart",
+    "bytes": 7892,
+    "sha256": "3fc3723d815fefef10f9244563805eb4bed35f6700de422fd6901599ddfc29a6"
+  },
+  {
+    "path": "lib/models/trade.dart",
+    "bytes": 12446,
+    "sha256": "08c5930798fb52f4c40d961662de9761a7210c13be493a4f892061a6f76e9659"
+  },
+  {
+    "path": "lib/models/trading_account.dart",
+    "bytes": 1408,
+    "sha256": "065edb03149ea08d8ead72a24ff5f4bfd025e29dc005cec28aa0c1c7a425ee05"
+  },
+  {
+    "path": "lib/screens/accounts_screen.dart",
+    "bytes": 11579,
+    "sha256": "7a8854f4d0c0eb36d07bc448772443dcc898978997c9fdf8c20e0ab9a1537daf"
+  },
+  {
+    "path": "lib/screens/days_screen.dart",
+    "bytes": 39594,
+    "sha256": "e93409ae032dfe112384302e8688156bc4298517206e8c32065c46211766d2f6"
+  },
+  {
+    "path": "lib/screens/home_screen.dart",
+    "bytes": 8805,
+    "sha256": "6f1acb74346507d8b4dae5a1f1804f5cca1b6eaf4bca2a81bcc768e641ba99b1"
+  },
+  {
+    "path": "lib/screens/menu_screen.dart",
+    "bytes": 2029,
+    "sha256": "47d93326c3b63e0a878ae0173c68c411eaeb5d81c88051fceccc097278ff63eb"
+  },
+  {
+    "path": "lib/screens/settings_screen.dart",
+    "bytes": 12609,
+    "sha256": "60e72ee8d0aada1b9632dc6c0c02d1c18f012e642baecc4f10356d0b87b7ca47"
+  },
+  {
+    "path": "lib/screens/trade_form_screen.dart",
+    "bytes": 60695,
+    "sha256": "7caaea38c3d8720b1112519c630928b215ebef5449ab8507580118ae12dd35c2"
+  },
+  {
+    "path": "lib/screens/trades_screen.dart",
+    "bytes": 64431,
+    "sha256": "78ede0274e61262cf4e4954c4c31a972c290a903b62f5ef7708c58e1b70d22fb"
+  },
+  {
+    "path": "lib/state/app_controller.dart",
+    "bytes": 8243,
+    "sha256": "a3db5adae81c5d4c074753d92b5a1d4da3cfd0416319b384e37ab17e1dad7442"
+  },
+  {
+    "path": "lib/state/app_scope.dart",
+    "bytes": 488,
+    "sha256": "b5b062c95f86be1fad6164afb0d55450bc94041ae802db41b82487350d69db49"
+  },
+  {
+    "path": "lib/theme/app_theme.dart",
+    "bytes": 24727,
+    "sha256": "1e58128aeb91a74bd3461630d6ca7a77d5596dad6e36cb9f18d20ac7bc61ea0d"
+  },
+  {
+    "path": "lib/theme/trade_detail_palette.dart",
+    "bytes": 1021,
+    "sha256": "a9b14181958d20e6aeb9ac0fea94584e2faa73f32c5162ee5092b7ac7b046f18"
+  },
+  {
+    "path": "lib/widgets/common.dart",
+    "bytes": 12342,
+    "sha256": "c53a503e02ac7d977f58a0fff6113634542570ba3204aa3acef9437c22821952"
+  },
+  {
+    "path": "lib/widgets/decision_option_emoji.dart",
+    "bytes": 4490,
+    "sha256": "477d6d06d076a61551dad8c1d178a777a5f4985c80f59f379a517110a180e2cc"
+  },
+  {
+    "path": "lib/widgets/decision_section_logo.dart",
+    "bytes": 4310,
+    "sha256": "424ab971d2d4b0e36d23b048673a9794b84a7524c463a74911aaef2f1e1f20b8"
+  },
+  {
+    "path": "lib/widgets/equity_curve.dart",
+    "bytes": 46292,
+    "sha256": "01385e6ffd33d6942c8ddf8209fd303f0ace813dcf9eb06f4a695686503222c1"
+  },
+  {
+    "path": "lib/widgets/strategy_adherence_chip.dart",
+    "bytes": 4495,
+    "sha256": "6a928198948e6d8abd758774ac85d4a571fbd3526e302185c1beb2a77768e14b"
+  },
+  {
+    "path": "lib/widgets/trade_entry_setup_chips.dart",
+    "bytes": 2161,
+    "sha256": "4eb7b47f40b40ec2a7875432232723210374386809bce15a0638acaafeee87fa"
+  },
+  {
+    "path": "lib/widgets/trade_execution_journal.dart",
+    "bytes": 10720,
+    "sha256": "45ec8e1f86d7601b617d13e0cd88c7a867cb8c108e8b78943f2bb85ed212f3aa"
+  },
+  {
+    "path": "lib/widgets/trade_image_preview.dart",
+    "bytes": 8723,
+    "sha256": "a8806b1659f49ee06f2b2a02ef0d18dd0f701f4c66093e8b1e77d2253c62e513"
+  },
+  {
+    "path": "lib/widgets/trade_info_tile.dart",
+    "bytes": 1301,
+    "sha256": "8a500bec3e0c482d80d5a2ba935ca7d2e32d95b698205bf48d4dadaefe89b198"
+  },
+  {
+    "path": "pubspec.lock",
+    "bytes": 18749,
+    "sha256": "655b30d97f7e87c1f3a46165343bdc331bbbed172ae85a8be12fc20b7f0ae118"
+  },
+  {
+    "path": "pubspec.yaml",
+    "bytes": 2548,
+    "sha256": "5f97ba0be630d485a0f92a7093b49e4c962019d8da5af0d4b0709eebcb9053f5"
+  },
+  {
+    "path": "scripts/build_release_apk.sh",
+    "bytes": 1367,
+    "sha256": "fa70d50098c20a3d45188386fffcce6f74f3d7e34b3d364cf94b157dd68426a8"
+  },
+  {
+    "path": "scripts/verify_arm64_apk.sh",
+    "bytes": 1836,
+    "sha256": "cf98cf456916794d8254293541709144f9d34ba1f063e578d810471b5aea8284"
+  },
+  {
+    "path": "test/app_controller_storage_failure_test.dart",
+    "bytes": 3648,
+    "sha256": "e81452f6fe01b1c73bf2765d8c9c68d90d3ccaa7319a019f638ac5ea5b5edb4c"
+  },
+  {
+    "path": "test/custom_confirmation_test.dart",
+    "bytes": 9007,
+    "sha256": "ce180019aa77270c6d991c67ee8bf638a019d6e3642088eb8ec28c44767f9d5a"
+  },
+  {
+    "path": "test/days_calendar_test.dart",
+    "bytes": 11471,
+    "sha256": "64253ee9a86d466abc114968ad42b14f27cf378db2a484565e0791f4686e9ec6"
+  },
+  {
+    "path": "test/entry_conditions_test.dart",
+    "bytes": 8466,
+    "sha256": "962ee16a602f18b207777407f9726881e80bf1c3396eb3c794b1749ac49bbe31"
+  },
+  {
+    "path": "test/large_history_ui_test.dart",
+    "bytes": 8128,
+    "sha256": "be96def24bb0112681113ad7f81847b7f16ec015df4b4e1390b9b9bda66090ca"
+  },
+  {
+    "path": "test/local_store_test.dart",
+    "bytes": 10796,
+    "sha256": "e8d164186ff6979d531b59abce1aa1651913f546b06ecd3df4fb82122ae9da49"
+  },
+  {
+    "path": "test/real_size_backup_stress_test.dart",
+    "bytes": 5064,
+    "sha256": "0ebe95495aa7d2997d787aa1c3a56bd0b10add86bd48a8b65557b5a84fdcbf91"
+  },
+  {
+    "path": "test/strategy_adherence_test.dart",
+    "bytes": 1539,
+    "sha256": "b5df96df8d485c6663b6e16ec6187c15ed7e46a1cc3770fa2ec70efebb594074"
+  },
+  {
+    "path": "test/trade_behavior_summary_test.dart",
+    "bytes": 2240,
+    "sha256": "2c6ca84ca79e253d6d9600a8835458ec636658b54069a8cef8efcf99b8596d23"
+  },
+  {
+    "path": "test/trade_card_text_test.dart",
+    "bytes": 1487,
+    "sha256": "d6e97d17a8e299c41c6002d102f73d6f41f83d540cb08c4c72097e6fcc881487"
+  },
+  {
+    "path": "test/trade_csv_exporter_test.dart",
+    "bytes": 4170,
+    "sha256": "6bee8408dce498ff2ba2753d2f0540273028c367e00964900f63b5d490ae5896"
+  },
+  {
+    "path": "test/trade_decision_emoji_test.dart",
+    "bytes": 3291,
+    "sha256": "6fd6229ee4028f7bb72a039e438074fb1fbcc4a925069932fdc459fbacbf2759"
+  },
+  {
+    "path": "test/trade_detail_layout_test.dart",
+    "bytes": 10709,
+    "sha256": "21dd1178bb3ef6030c63bbf4a4ba49fd0dd646459ae9644d494a39e1df4cc60b"
+  },
+  {
+    "path": "test/trade_detail_palette_test.dart",
+    "bytes": 2037,
+    "sha256": "d93fd058702063831af443a27e970d77f72cd3cec3de0b7119bf0aaf4cfa6280"
+  },
+  {
+    "path": "test/trade_entry_catalog_test.dart",
+    "bytes": 4009,
+    "sha256": "425d991777bbf387191fb981564227f6a278f4c8e8ead44ac4b50613a8446cb2"
+  },
+  {
+    "path": "test/trade_execution_journal_test.dart",
+    "bytes": 2993,
+    "sha256": "ab8768ae3f50f2651d01b3a6b913f80a61ab61b70f179e6447db8280d68d8c12"
+  },
+  {
+    "path": "test/trade_image_cleanup_test.dart",
+    "bytes": 6826,
+    "sha256": "ee5426d197b5af9ff937c362f82e62e1efc2491bf8f9cbcfbaf36d0203c61625"
+  },
+  {
+    "path": "test/trade_image_preview_test.dart",
+    "bytes": 2849,
+    "sha256": "2f9dbdfdc0fbf821c5807746bc0947986e1db34657553ab814526dd15261f0d1"
+  },
+  {
+    "path": "test/trading_app_test.dart",
+    "bytes": 21057,
+    "sha256": "f96993bea82394effba69b960a898972e9d40fa98b2fda149303ad085a09f19b"
+  },
+  {
+    "path": "test/trading_logic_test.dart",
+    "bytes": 4767,
+    "sha256": "fe51938b359b09bfdedc9d1da5041b761a58d184f286bea06f553f0413b0d216"
+  }
+]
