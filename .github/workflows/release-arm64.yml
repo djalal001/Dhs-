@@ -15,7 +15,7 @@ jobs:
         run: |
           python3 - <<'PY'
           import pathlib, zipfile, os, hashlib
-          archive = pathlib.Path('TraderDesk_Android_Project_v1.7.9+65_GPT_SOURCE.zip')
+          archive = pathlib.Path('TraderDesk_Android_Project_v1.7.10+66_GPT_SOURCE.zip')
           root = pathlib.Path('release-source').resolve()
           root.mkdir()
           with zipfile.ZipFile(archive) as z:
@@ -72,10 +72,10 @@ jobs:
           assert 'application-debuggable' not in badging, 'Debuggable APK rejected'
           version = re.search(r"versionName='([^']+)'", badging).group(1)
           code = re.search(r"versionCode='([^']+)'", badging).group(1)
-          assert (version, code) == ('1.7.9', '65'), f'Unexpected version: {version}+{code}'
+          assert (version, code) == ('1.7.10', '66'), f'Unexpected version: {version}+{code}'
           out = pathlib.Path('release-apk')
           out.mkdir()
-          dst = out / 'TraderDesk-1.7.9+65-arm64-v8a-release.apk'
+          dst = out / 'TraderDesk-1.7.10+66-arm64-v8a-release.apk'
           shutil.copy2(src, dst)
           info = dict(filename=dst.name, bytes=dst.stat().st_size, MiB=round(dst.stat().st_size / 1048576, 2), sha256=hashlib.sha256(dst.read_bytes()).hexdigest(), versionName=version, versionCode=code)
           text = json.dumps(info, indent=2)
@@ -88,7 +88,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         id: apk
         with:
-          name: TraderDesk-1.7.9+65-ARM64-RELEASE-${{ github.run_number }}
+          name: TraderDesk-1.7.10+66-ARM64-RELEASE-${{ github.run_number }}
           path: release-apk/*
           if-no-files-found: error
       - name: Record artifact link
