@@ -11,29 +11,29 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
-      - name: Extract and inspect exact archive
+      - name: Extract exact source and inspect build configuration
         run: |
           python3 - <<'PY'
-          import pathlib, zipfile, hashlib, os
-          p = pathlib.Path('TraderDesk_Android_Project_v1.7.8+64_GPT_SOURCE.zip')
+          import pathlib, zipfile, os, hashlib
+          archive = pathlib.Path('TraderDesk_Android_Project_v1.7.9+65_GPT_SOURCE.zip')
           root = pathlib.Path('release-source').resolve()
           root.mkdir()
-          with zipfile.ZipFile(p) as z:
-              for entry in z.infolist():
-                  assert (root / entry.filename).resolve().is_relative_to(root), 'Unsafe archive path'
+          with zipfile.ZipFile(archive) as z:
+              for item in z.infolist():
+                  assert (root / item.filename).resolve().is_relative_to(root), 'Unsafe archive path'
               z.extractall(root)
-          projects = [f.parent for f in root.rglob('pubspec.yaml') if (f.parent / 'android').is_dir() and (f.parent / 'lib').is_dir()]
-          assert len(projects) == 1, f'Expected one project: {projects}'
+          projects = [p.parent for p in root.rglob('pubspec.yaml') if (p.parent / 'android').is_dir() and (p.parent / 'lib').is_dir()]
+          assert len(projects) == 1, str(projects)
           project = projects[0]
-          report = [f'Archive: {p}', f'SHA256: {hashlib.sha256(p.read_bytes()).hexdigest()}', f'Project: {project}']
-          files = [project / 'pubspec.yaml'] + list((project / 'android').rglob('*.gradle')) + list((project / 'android').rglob('*.gradle.kts')) + list((project / 'android').rglob('gradle-wrapper.properties'))
-          for f in files:
-              report.append(f'--- {f.relative_to(project)} ---\n{f.read_text()}')
+          report = [str(archive), hashlib.sha256(archive.read_bytes()).hexdigest()]
+          for p in [project / 'pubspec.yaml'] + list((project / 'android').rglob('*.gradle*')) + list((project / 'android').rglob('gradle-wrapper.properties')):
+              if p.is_file():
+                  report.append(str(p.relative_to(project)) + '\n' + p.read_text())
           pathlib.Path('INSPECTION.txt').write_text('\n'.join(report))
           print('\n'.join(report))
           (project / 'android/local.properties').unlink(missing_ok=True)
-          with open(os.environ['GITHUB_ENV'], 'a') as env:
-              env.write(f'PROJECT_DIR={project}\n')
+          with open(os.environ['GITHUB_ENV'], 'a') as f:
+              f.write(f'PROJECT_DIR={project}\n')
           PY
       - uses: actions/setup-java@v4
         with:
@@ -47,7 +47,7 @@ jobs:
           channel: stable
           flutter-version: '3.47.7'
           cache: true
-      - name: Build Release AOT ARM64 only
+      - name: Build release AOT ARM64 only
         shell: bash
         run: |
           set -euo pipefail
@@ -57,40 +57,41 @@ jobs:
             flutter pub get --enforce-lockfile
             flutter build apk --release --target-platform android-arm64 --no-pub --no-tree-shake-icons --split-debug-info="$GITHUB_WORKSPACE/symbols"
           } 2>&1 | tee "$GITHUB_WORKSPACE/RELEASE_BUILD.log"
-      - name: Verify APK and record actual version and size
+      - name: Verify release APK and record size
         run: |
           python3 - <<'PY'
-          import pathlib, os, zipfile, hashlib, json, subprocess, re
+          import pathlib, os, zipfile, subprocess, re, hashlib, json, shutil
           src = pathlib.Path(os.environ['PROJECT_DIR']) / 'build/app/outputs/flutter-apk/app-release.apk'
           with zipfile.ZipFile(src) as z:
               abis = {p.split('/')[1] for p in z.namelist() if p.startswith('lib/') and p.endswith('.so')}
               assert abis == {'arm64-v8a'}, str(abis)
               assert 'lib/arm64-v8a/libapp.so' in z.namelist(), 'AOT missing'
-          tool = pathlib.Path(os.environ['ANDROID_HOME']) / 'build-tools/36.0.0'
-          badging = subprocess.check_output([str(tool / 'aapt'), 'dump', 'badging', str(src)], text=True)
+          tools = pathlib.Path(os.environ['ANDROID_HOME']) / 'build-tools/36.0.0'
+          badging = subprocess.check_output([str(tools / 'aapt'), 'dump', 'badging', str(src)], text=True)
           pathlib.Path('APK_BADGING.txt').write_text(badging)
           assert 'application-debuggable' not in badging, 'Debuggable APK rejected'
           version = re.search(r"versionName='([^']+)'", badging).group(1)
           code = re.search(r"versionCode='([^']+)'", badging).group(1)
-          assert re.fullmatch(r'[0-9A-Za-z.+_-]+', version), 'Unsafe version filename'
+          assert (version, code) == ('1.7.9', '65'), f'Unexpected version: {version}+{code}'
           out = pathlib.Path('release-apk')
           out.mkdir()
-          dst = out / f'TraderDesk-{version}+{code}-arm64-v8a-release.apk'
-          dst.write_bytes(src.read_bytes())
-          metadata = dict(filename=dst.name, versionName=version, versionCode=code, bytes=dst.stat().st_size, MiB=round(dst.stat().st_size / 1048576, 2), sha256=hashlib.sha256(dst.read_bytes()).hexdigest(), source_archive='TraderDesk_Android_Project_v1.7.8+64_GPT_SOURCE.zip')
-          (out / 'APK_INFO.json').write_text(json.dumps(metadata, indent=2))
-          with open('SIGNING_REPORT.txt', 'w') as report:
-              subprocess.run([str(tool / 'apksigner'), 'verify', '--print-certs', str(dst)], check=True, stdout=report)
-          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
-              summary.write(json.dumps(metadata, indent=2))
+          dst = out / 'TraderDesk-1.7.9+65-arm64-v8a-release.apk'
+          shutil.copy2(src, dst)
+          info = dict(filename=dst.name, bytes=dst.stat().st_size, MiB=round(dst.stat().st_size / 1048576, 2), sha256=hashlib.sha256(dst.read_bytes()).hexdigest(), versionName=version, versionCode=code)
+          text = json.dumps(info, indent=2)
+          (out / 'APK_INFO.json').write_text(text)
+          with open('SIGNING_REPORT.txt', 'w') as f:
+              subprocess.run([str(tools / 'apksigner'), 'verify', '--print-certs', str(dst)], check=True, stdout=f)
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f:
+              f.write(text + '\n')
           PY
       - uses: actions/upload-artifact@v4
         id: apk
         with:
-          name: TraderDesk-GPT-1.7.8-source-ARM64-RELEASE-${{ github.run_number }}
+          name: TraderDesk-1.7.9+65-ARM64-RELEASE-${{ github.run_number }}
           path: release-apk/*
           if-no-files-found: error
-      - name: Record download link
+      - name: Record artifact link
         run: echo '${{ steps.apk.outputs.artifact-url }}' >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         if: always()
