@@ -1,0 +1,63 @@
+name: trader_desk
+description: Independent personal trading journal and risk workspace.
+publish_to: 'none'
+version: 1.7.23+79
+environment:
+  sdk: '>=3.13.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  file_picker: ^13.1.0
+  image_picker: ^1.2.4
+  path_provider: ^2.1.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/emojis/emoji-executed-per-plan.gif
+    - assets/emojis/emoji-avoided-entry-fear.gif
+    - assets/emojis/emoji-entered-early.gif
+    - assets/emojis/emoji-entry-conditions-not-met.gif
+    - assets/emojis/emoji-missed-htf-bounce-zone.gif
+    - assets/emojis/emoji-missed-ltf-bounce-zone.gif
+    - assets/emojis/emoji-missed-wick-trendline.gif
+    - assets/emojis/emoji-hesitation-partial-size.gif
+    - assets/emojis/emoji-late-entry.gif
+    - assets/emojis/emoji-stop-loss-moved.gif
+    - assets/emojis/emoji-no-breakout-positive-close.gif
+    - assets/emojis/emoji-exited-early-target.gif
+    - assets/emojis/decisions/decision-enteredEarly.gif
+    - assets/emojis/decisions/decision-exitedEarlyBecauseFearOfLosingProfit.gif
+    - assets/emojis/decisions/decision-hesitationPartialSize.gif
+    - assets/emojis/decisions/decision-lateEntry.gif
+    - assets/emojis/decisions/decision-missedHigherTimeframeBounceArea.gif
+    - assets/emojis/decisions/decision-missedLowerTimeframeBounceArea.gif
+    - assets/emojis/decisions/decision-missedTrendlineFromCandleWicks.gif
+    - assets/emojis/decisions/decision-noBreakoutPositiveClose.gif
+    - assets/emojis/decisions/decision-stopLossReducedWithoutReason.webp
+    - assets/emojis/decisions/decision-stopLossIncreasedWithoutReason.webp
+    - assets/emojis/decisions/decision-noTrendlineSupportsEntryZone.webp
+    - assets/emojis/decisions/decision-missedHigherTimeframeTrendlineIntegration.webp
+    - assets/emojis/decisions/decision-stopLossIncreasedForLiquiditySafety.webp
+    - assets/emojis/decisions/decision-stopLossReducedForNegativeClose.webp
+    - assets/emojis/decisions/decision-partialSizeAwaitingDeepCorrection.webp
+    - assets/emojis/commitment/
+    - assets/emojis/no_entry/
+  fonts:
+    - family: IBMPlexSansArabic
+      fonts:
+        - asset: assets/fonts/IBMPlexSansArabic-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/IBMPlexSansArabic-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/IBMPlexSansArabic-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/IBMPlexSansArabic-Bold.ttf
+          weight: 700
