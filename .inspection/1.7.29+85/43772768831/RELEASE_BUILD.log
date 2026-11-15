@@ -1,0 +1,30 @@
+Flutter 3.47.7 • channel stable • https://github.com/flutter/flutter.git
+Framework • revision abaf9c5237 (5 weeks ago) • 2026-10-08 09:51:21 -0700
+Engine • hash d8a2d6c768c334d53e16277f837970ffa1e2de81 (revision deb287481e) (1 months ago) • 2026-10-07 17:09:12.000Z
+Tools • Dart 3.13.5 • DevTools 2.60.0
+Resolving dependencies...
+Downloading packages...
+  android_file_picker 2.0.1 (2.1.6 available)
+  code_assets 2.1.0 (2.2.0 available)
+  cross_file 0.3.5+5 (0.4.0 available)
+  crypto 3.0.7 (3.0.8 available)
+  file_picker 13.1.0 (13.3.3 available)
+  file_picker_darwin 2.2.0 (2.5.1 available)
+  file_picker_linux 2.0.2 (2.0.4 available)
+  file_picker_platform_interface 4.1.0 (4.2.0 available)
+  file_picker_web 4.1.0 (4.2.1 available)
+  file_selector_macos 0.9.5+1 (0.9.5+2 available)
+  image_picker_ios 0.8.13+10 (0.8.13+15 available)
+  jni 1.1.0 (1.1.2 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  objective_c 9.6.2 (9.6.4 available)
+  test_api 0.7.12 (0.7.15 available)
+  vector_math 2.4.3 (2.4.4 available)
+  vm_service 15.3.0 (15.4.0 available)
+  web 1.1.1 (1.1.2 available)
+  windows_file_picker 2.0.1 (2.0.2 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+20 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Running Gradle task 'assembleRelease'...                        
