@@ -11,18 +11,16 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Verify source and inspect configuration
+      - name: Verify and extract source
         run: |
           python3 - <<'PY'
-          import pathlib, zipfile, hashlib, stat, os, json
-          archive = pathlib.Path('TraderDesk_Android_Project_v1.7.36+92_GPT_SOURCE.zip')
-          raw = archive.read_bytes()
-          assert hashlib.sha1(b'blob ' + str(len(raw)).encode() + b'\0' + raw).hexdigest() == '51bb0617affd150a63dc6b40a4e6fd947bac73a6'
+          import pathlib, zipfile, hashlib, stat, os
+          a = pathlib.Path('TraderDesk_Android_Project_v1.7.37+93_GPT_SOURCE.zip')
+          b = a.read_bytes()
+          assert hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest() == '1b1dded5398639a7b70cbd58a3bac22612bd0b57'
           root = pathlib.Path('release-source').resolve()
           root.mkdir()
-          with zipfile.ZipFile(archive) as z:
+          with zipfile.ZipFile(a) as z:
               entries = z.infolist()
               assert len(entries) <= 20000 and sum(e.file_size for e in entries) <= 1073741824
               assert len({e.filename for e in entries}) == len(entries)
@@ -30,23 +28,15 @@ jobs:
                   p = pathlib.PurePosixPath(e.filename)
                   assert not p.is_absolute() and '..' not in p.parts and '\\' not in e.filename
                   assert not stat.S_ISLNK(e.external_attr >> 16)
-                  assert (root / e.filename).resolve().is_relative_to(root)
+                  assert (root/e.filename).resolve().is_relative_to(root)
               assert z.testzip() is None
               z.extractall(root)
-          projects = [p.parent for p in root.rglob('pubspec.yaml') if (p.parent / 'android').is_dir() and (p.parent / 'lib').is_dir()]
+          projects = [p.parent for p in root.rglob('pubspec.yaml') if (p.parent/'android').is_dir() and (p.parent/'lib').is_dir()]
           assert len(projects) == 1
           project = projects[0]
-          report = pathlib.Path('.inspection/1.7.36+92') / os.environ['GITHUB_RUN_ID']
-          report.mkdir(parents=True)
-          for p in project.rglob('*'):
-              if p.is_file() and (p.name in {'pubspec.yaml', 'pubspec.lock', 'gradle-wrapper.properties'} or p.suffix in {'.gradle', '.kts', '.pro'}):
-                  dest = report / 'configuration' / p.relative_to(project)
-                  dest.parent.mkdir(parents=True, exist_ok=True)
-                  dest.write_bytes(p.read_bytes())
-          (report / 'SOURCE.json').write_text(json.dumps({'archive': archive.name, 'sha256': hashlib.sha256(raw).hexdigest()}, indent=2))
-          (project / 'android/local.properties').unlink(missing_ok=True)
+          (project/'android/local.properties').unlink(missing_ok=True)
           with open(os.environ['GITHUB_ENV'], 'a') as f:
-              f.write(f'PROJECT_DIR={project}\nREPORT={report}\n')
+              f.write(f'PROJECT_DIR={project}\n')
           PY
       - uses: actions/setup-java@v4
         with:
@@ -57,50 +47,53 @@ jobs:
           packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
       - uses: subosito/flutter-action@v2
         with:
-          channel: stable
           flutter-version: '3.47.7'
+          channel: stable
           cache: true
-      - name: Build Release AOT ARM64
+      - name: Inspect and build Release AOT ARM64
         id: build
         shell: bash
         run: |
           set -euo pipefail
+          mkdir -p diagnostics
           cd "$PROJECT_DIR"
           {
             flutter --version
+            cat pubspec.yaml
+            find android -type f \( -name '*.gradle' -o -name '*.kts' -o -name '*.pro' -o -name 'gradle-wrapper.properties' \) -print -exec cat {} \;
             flutter pub get --enforce-lockfile
             flutter build apk --release --target-platform android-arm64 --no-pub --no-tree-shake-icons --split-debug-info="$GITHUB_WORKSPACE/symbols"
-          } 2>&1 | tee "$GITHUB_WORKSPACE/RELEASE_BUILD.log"
-      - name: Verify APK and measure size
+          } 2>&1 | tee "$GITHUB_WORKSPACE/diagnostics/RELEASE_BUILD.log"
+      - name: Verify APK
         id: verify
         run: |
           python3 - <<'PY'
           import pathlib, os, zipfile, subprocess, re, hashlib, json, shutil
-          src = pathlib.Path(os.environ['PROJECT_DIR']) / 'build/app/outputs/flutter-apk/app-release.apk'
+          src = pathlib.Path(os.environ['PROJECT_DIR'])/'build/app/outputs/flutter-apk/app-release.apk'
           with zipfile.ZipFile(src) as z:
               assert {p.split('/')[1] for p in z.namelist() if p.startswith('lib/') and p.endswith('.so')} == {'arm64-v8a'}
               assert 'lib/arm64-v8a/libapp.so' in z.namelist()
-          tools = pathlib.Path(os.environ['ANDROID_HOME']) / 'build-tools/36.0.0'
-          badging = subprocess.check_output([str(tools / 'aapt'), 'dump', 'badging', str(src)], text=True)
-          pathlib.Path('APK_BADGING.txt').write_text(badging)
+          tools = pathlib.Path(os.environ['ANDROID_HOME'])/'build-tools/36.0.0'
+          badging = subprocess.check_output([str(tools/'aapt'), 'dump', 'badging', str(src)], text=True)
+          pathlib.Path('diagnostics/APK_BADGING.txt').write_text(badging)
           assert 'application-debuggable' not in badging
-          assert re.search(r"versionName='([^']+)'", badging).group(1) == '1.7.36'
-          assert re.search(r"versionCode='([^']+)'", badging).group(1) == '92'
+          assert re.search(r"versionName='([^']+)'", badging).group(1) == '1.7.37'
+          assert re.search(r"versionCode='([^']+)'", badging).group(1) == '93'
           out = pathlib.Path('release-apk')
           out.mkdir()
-          dst = out / 'TraderDesk-1.7.36+92-arm64-v8a-release.apk'
+          dst = out/'TraderDesk-1.7.37+93-arm64-v8a-release.apk'
           shutil.copy2(src, dst)
-          with open('SIGNING_REPORT.txt', 'w') as f:
-              subprocess.run([str(tools / 'apksigner'), 'verify', '--print-certs', str(dst)], check=True, stdout=f)
-          info = dict(filename=dst.name, bytes=dst.stat().st_size, MiB=round(dst.stat().st_size / 1048576, 2), sha256=hashlib.sha256(dst.read_bytes()).hexdigest())
-          (out / 'APK_INFO.json').write_text(json.dumps(info, indent=2))
+          with open('diagnostics/SIGNING_REPORT.txt', 'w') as f:
+              subprocess.run([str(tools/'apksigner'), 'verify', '--print-certs', str(dst)], check=True, stdout=f)
+          info = dict(filename=dst.name, bytes=dst.stat().st_size, MiB=round(dst.stat().st_size/1048576, 2), sha256=hashlib.sha256(dst.read_bytes()).hexdigest())
+          pathlib.Path('diagnostics/APK_INFO.json').write_text(json.dumps(info, indent=2))
           with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f:
               f.write(json.dumps(info, indent=2))
           PY
       - uses: actions/upload-artifact@v4
         id: apk
         with:
-          name: TraderDesk-1.7.36+92-ARM64-RELEASE-${{ github.run_number }}
+          name: TraderDesk-1.7.37+93-ARM64-RELEASE-${{ github.run_number }}
           path: release-apk/*
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
@@ -108,12 +101,8 @@ jobs:
         with:
           name: TraderDesk-diagnostics-${{ github.run_number }}
           path: |
-            RELEASE_BUILD.log
-            APK_BADGING.txt
-            SIGNING_REPORT.txt
+            diagnostics/
             symbols/
-            .inspection/1.7.36+92/
-          include-hidden-files: true
           if-no-files-found: warn
       - name: Publish result
         if: always()
@@ -122,21 +111,18 @@ jobs:
           ARTIFACT_URL: ${{ steps.apk.outputs.artifact-url }}
           BUILD_STATUS: ${{ job.status }}
         run: |
-          set -euo pipefail
           python3 - <<'PY'
           import pathlib, os, json, shutil
-          report = pathlib.Path('.inspection/1.7.36+92') / os.environ['GITHUB_RUN_ID']
+          report = pathlib.Path('.inspection/1.7.37+93')/os.environ['GITHUB_RUN_ID']
           report.mkdir(parents=True, exist_ok=True)
-          for name in ['RELEASE_BUILD.log', 'APK_BADGING.txt', 'SIGNING_REPORT.txt', 'release-apk/APK_INFO.json']:
-              p = pathlib.Path(name)
-              if p.is_file():
-                  shutil.copy2(p, report / p.name)
-          result = dict(status=os.environ['BUILD_STATUS'], steps=json.loads(os.environ['STEPS_JSON']), artifact_url=os.environ.get('ARTIFACT_URL', ''), run_url=os.environ['GITHUB_SERVER_URL'] + '/' + os.environ['GITHUB_REPOSITORY'] + '/actions/runs/' + os.environ['GITHUB_RUN_ID'], source_commit=os.environ['GITHUB_SHA'])
-          (report / 'RESULT.json').write_text(json.dumps(result, indent=2))
+          if pathlib.Path('diagnostics').is_dir():
+              shutil.copytree('diagnostics', report, dirs_exist_ok=True)
+          result = dict(status=os.environ['BUILD_STATUS'], steps=json.loads(os.environ['STEPS_JSON']), artifact_url=os.environ.get('ARTIFACT_URL', ''), run_url=os.environ['GITHUB_SERVER_URL']+'/'+os.environ['GITHUB_REPOSITORY']+'/actions/runs/'+os.environ['GITHUB_RUN_ID'], source_commit=os.environ['GITHUB_SHA'])
+          (report/'RESULT.json').write_text(json.dumps(result, indent=2))
           PY
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -- .inspection/1.7.36+92/
-          git commit -m 'Publish TraderDesk 1.7.36+92 build result [skip ci]'
+          git add -- .inspection/1.7.37+93/
+          git commit -m 'Publish TraderDesk 1.7.37+93 build result [skip ci]'
           git pull --rebase origin "$GITHUB_REF_NAME"
           git push origin "HEAD:$GITHUB_REF_NAME"
