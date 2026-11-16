@@ -17,9 +17,9 @@ jobs:
         run: |
           python3 - <<'PY'
           import pathlib, zipfile, hashlib, stat, os, json
-          archive = pathlib.Path('TraderDesk_Android_Project_v1.7.33+89_GPT_SOURCE.zip')
+          archive = pathlib.Path('TraderDesk_Android_Project_v1.7.34+90_GPT_SOURCE.zip')
           raw = archive.read_bytes()
-          assert hashlib.sha1(b'blob ' + str(len(raw)).encode() + b'\0' + raw).hexdigest() == 'ccde081a79288332b5efd2be0f230425a9fa344e'
+          assert hashlib.sha1(b'blob ' + str(len(raw)).encode() + b'\0' + raw).hexdigest() == '3bf5288b753b7a19d9f373612adc24cb88bb7c25'
           root = pathlib.Path('release-source').resolve()
           root.mkdir()
           with zipfile.ZipFile(archive) as z:
@@ -36,7 +36,7 @@ jobs:
           projects = [p.parent for p in root.rglob('pubspec.yaml') if (p.parent / 'android').is_dir() and (p.parent / 'lib').is_dir()]
           assert len(projects) == 1
           project = projects[0]
-          report = pathlib.Path('.inspection/1.7.33+89') / os.environ['GITHUB_RUN_ID']
+          report = pathlib.Path('.inspection/1.7.34+90') / os.environ['GITHUB_RUN_ID']
           report.mkdir(parents=True)
           for p in project.rglob('*'):
               if p.is_file() and (p.name in {'pubspec.yaml', 'pubspec.lock', 'gradle-wrapper.properties'} or p.suffix in {'.gradle', '.kts', '.pro'}):
@@ -84,11 +84,11 @@ jobs:
           badging = subprocess.check_output([str(tools / 'aapt'), 'dump', 'badging', str(src)], text=True)
           pathlib.Path('APK_BADGING.txt').write_text(badging)
           assert 'application-debuggable' not in badging
-          assert re.search(r"versionName='([^']+)'", badging).group(1) == '1.7.33'
-          assert re.search(r"versionCode='([^']+)'", badging).group(1) == '89'
+          assert re.search(r"versionName='([^']+)'", badging).group(1) == '1.7.34'
+          assert re.search(r"versionCode='([^']+)'", badging).group(1) == '90'
           out = pathlib.Path('release-apk')
           out.mkdir()
-          dst = out / 'TraderDesk-1.7.33+89-arm64-v8a-release.apk'
+          dst = out / 'TraderDesk-1.7.34+90-arm64-v8a-release.apk'
           shutil.copy2(src, dst)
           with open('SIGNING_REPORT.txt', 'w') as f:
               subprocess.run([str(tools / 'apksigner'), 'verify', '--print-certs', str(dst)], check=True, stdout=f)
@@ -100,7 +100,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         id: apk
         with:
-          name: TraderDesk-1.7.33+89-ARM64-RELEASE-${{ github.run_number }}
+          name: TraderDesk-1.7.34+90-ARM64-RELEASE-${{ github.run_number }}
           path: release-apk/*
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
@@ -112,7 +112,7 @@ jobs:
             APK_BADGING.txt
             SIGNING_REPORT.txt
             symbols/
-            .inspection/1.7.33+89/
+            .inspection/1.7.34+90/
           include-hidden-files: true
           if-no-files-found: warn
       - name: Publish result
@@ -125,7 +125,7 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           import pathlib, os, json, shutil
-          report = pathlib.Path('.inspection/1.7.33+89') / os.environ['GITHUB_RUN_ID']
+          report = pathlib.Path('.inspection/1.7.34+90') / os.environ['GITHUB_RUN_ID']
           report.mkdir(parents=True, exist_ok=True)
           for name in ['RELEASE_BUILD.log', 'APK_BADGING.txt', 'SIGNING_REPORT.txt', 'release-apk/APK_INFO.json']:
               p = pathlib.Path(name)
@@ -136,7 +136,7 @@ jobs:
           PY
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -- .inspection/1.7.33+89/
-          git commit -m 'Publish TraderDesk 1.7.33+89 build result [skip ci]'
+          git add -- .inspection/1.7.34+90/
+          git commit -m 'Publish TraderDesk 1.7.34+90 build result [skip ci]'
           git pull --rebase origin "$GITHUB_REF_NAME"
           git push origin "HEAD:$GITHUB_REF_NAME"
