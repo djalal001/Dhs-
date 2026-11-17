@@ -1,5 +1,6 @@
 name: TraderDesk ARM64 Release
-on: [push, workflow_dispatch]
+on:
+  workflow_dispatch:
 permissions:
   contents: write
 concurrency:
