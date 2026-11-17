@@ -15,9 +15,9 @@ jobs:
         run: |
           python3 - <<'PY'
           import pathlib, zipfile, hashlib, stat, os
-          a = pathlib.Path('TraderDesk_Android_Project_v1.7.41+97_GPT_SOURCE.zip')
+          a = pathlib.Path('TraderDesk_Android_Project_v1.7.42+98_GPT_SOURCE.zip')
           b = a.read_bytes()
-          assert hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest() == '7ab487a3618f5b6bda7c4f32c4bad5d5c3e44b3c'
+          assert hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest() == '9729fa0e5d942044f8801aaa320c39e294f683c8'
           root = pathlib.Path('release-source').resolve()
           root.mkdir()
           with zipfile.ZipFile(a) as z:
@@ -77,11 +77,11 @@ jobs:
           badging = subprocess.check_output([str(tools/'aapt'), 'dump', 'badging', str(src)], text=True)
           pathlib.Path('diagnostics/APK_BADGING.txt').write_text(badging)
           assert 'application-debuggable' not in badging
-          assert re.search(r"versionName='([^']+)'", badging).group(1) == '1.7.41'
-          assert re.search(r"versionCode='([^']+)'", badging).group(1) == '97'
+          assert re.search(r"versionName='([^']+)'", badging).group(1) == '1.7.42'
+          assert re.search(r"versionCode='([^']+)'", badging).group(1) == '98'
           out = pathlib.Path('release-apk')
           out.mkdir()
-          dst = out/'TraderDesk-1.7.41+97-arm64-v8a-release.apk'
+          dst = out/'TraderDesk-1.7.42+98-arm64-v8a-release.apk'
           shutil.copy2(src, dst)
           with open('diagnostics/SIGNING_REPORT.txt', 'w') as f:
               subprocess.run([str(tools/'apksigner'), 'verify', '--print-certs', str(dst)], check=True, stdout=f)
@@ -93,7 +93,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         id: apk
         with:
-          name: TraderDesk-1.7.41+97-ARM64-RELEASE-${{ github.run_number }}
+          name: TraderDesk-1.7.42+98-ARM64-RELEASE-${{ github.run_number }}
           path: release-apk/*
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
@@ -113,7 +113,7 @@ jobs:
         run: |
           python3 - <<'PY'
           import pathlib, os, json, shutil
-          report = pathlib.Path('.inspection/1.7.41+97')/os.environ['GITHUB_RUN_ID']
+          report = pathlib.Path('.inspection/1.7.42+98')/os.environ['GITHUB_RUN_ID']
           report.mkdir(parents=True, exist_ok=True)
           if pathlib.Path('diagnostics').is_dir():
               shutil.copytree('diagnostics', report, dirs_exist_ok=True)
@@ -122,7 +122,7 @@ jobs:
           PY
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -- .inspection/1.7.41+97/
-          git commit -m 'Publish TraderDesk 1.7.41+97 build result [skip ci]'
+          git add -- .inspection/1.7.42+98/
+          git commit -m 'Publish TraderDesk 1.7.42+98 build result [skip ci]'
           git pull --rebase origin "$GITHUB_REF_NAME"
           git push origin "HEAD:$GITHUB_REF_NAME"
