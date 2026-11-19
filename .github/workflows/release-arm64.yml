@@ -2,6 +2,7 @@ name: TraderDesk ARM64 Release
 on:
   push:
     branches: [main]
+    paths: ['.github/workflows/release-arm64.yml']
   workflow_dispatch:
 permissions:
   contents: write
