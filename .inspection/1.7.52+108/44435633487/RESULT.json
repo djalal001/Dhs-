@@ -1,0 +1,23 @@
+{
+  "status": "cancelled",
+  "steps": {
+    "build": {
+      "outputs": {},
+      "outcome": "cancelled",
+      "conclusion": "cancelled"
+    },
+    "verify": {
+      "outputs": {},
+      "outcome": "skipped",
+      "conclusion": "skipped"
+    },
+    "apk": {
+      "outputs": {},
+      "outcome": "skipped",
+      "conclusion": "skipped"
+    }
+  },
+  "artifact_url": "",
+  "run_url": "https://github.com/djalal001/Dhs-/actions/runs/44435633487",
+  "source_commit": "466607373cfa993a7e52308822e15094aef18588"
+}
