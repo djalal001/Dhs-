@@ -1,0 +1,126 @@
+name: TradeEntryChecklist Windows Build
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tradeentrychecklist-windows-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify and extract project
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $zip = 'TradeEntryChecklist_Windows_Project_v1.0.0.zip'
+          $hash = (Get-FileHash $zip -Algorithm SHA1).Hash.ToLower()
+          if ($hash -ne 'd9c3c61918f9b6cc4d0ff23449960022576f9cee') {
+            throw "Unexpected source archive SHA1: $hash"
+          }
+          New-Item -ItemType Directory -Force -Path 'project-source' | Out-Null
+          Expand-Archive -Path $zip -DestinationPath 'project-source' -Force
+          Get-ChildItem -Recurse -File project-source | Select-Object FullName, Length | Out-String | Tee-Object -FilePath 'PROJECT_FILES.txt'
+
+      - name: Detect project type
+        id: detect
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $root = (Resolve-Path 'project-source').Path
+          $flutter = Get-ChildItem -Path $root -Recurse -Filter pubspec.yaml | Where-Object { Test-Path (Join-Path $_.DirectoryName 'windows') }
+          $node = Get-ChildItem -Path $root -Recurse -Filter package.json | Select-Object -First 1
+          $python = Get-ChildItem -Path $root -Recurse -Include 'main.py','app.py','requirements.txt' | Select-Object -First 1
+          $csproj = Get-ChildItem -Path $root -Recurse -Filter *.csproj | Select-Object -First 1
+          if ($flutter) {
+            "type=flutter" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+            "dir=$($flutter.DirectoryName)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          } elseif ($node) {
+            "type=node" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+            "dir=$($node.DirectoryName)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          } elseif ($csproj) {
+            "type=dotnet" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+            "dir=$($csproj.DirectoryName)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          } elseif ($python) {
+            "type=python" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+            "dir=$($python.DirectoryName)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          } else {
+            throw 'No supported Windows project type detected. Expected Flutter, Node.js, .NET, or Python project.'
+          }
+
+      - name: Build Windows application
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $type = '${{ steps.detect.outputs.type }}'
+          $dir = '${{ steps.detect.outputs.dir }}'
+          Set-Location $dir
+          if ($type -eq 'flutter') {
+            flutter --version
+            flutter pub get
+            flutter build windows --release
+            $out = Get-ChildItem -Path 'build/windows/x64/runner/Release' -Recurse -File | Select-Object -ExpandProperty FullName
+            if (-not $out) { throw 'Flutter Windows build output not found.' }
+            New-Item -ItemType Directory -Force -Path '..\..\..\..\..\windows-output' | Out-Null
+            Copy-Item -Path 'build\windows\x64\runner\Release\*' -Destination '..\..\..\..\..\windows-output' -Recurse -Force
+          } elseif ($type -eq 'node') {
+            node --version
+            npm --version
+            if (Test-Path package-lock.json) { npm ci } else { npm install }
+            $pkg = Get-Content package.json -Raw | ConvertFrom-Json
+            if ($pkg.scripts.build) { npm run build }
+            elseif ($pkg.scripts.make) { npm run make }
+            elseif ($pkg.scripts.dist) { npm run dist }
+            else { throw 'No build, make, or dist script found in package.json.' }
+            New-Item -ItemType Directory -Force -Path '..\..\..\..\..\windows-output' | Out-Null
+            $outputs = @('dist','release','out','build') | ForEach-Object { Join-Path (Get-Location) $_ } | Where-Object { Test-Path $_ }
+            if (-not $outputs) { throw 'No known Node.js build output directory found.' }
+            foreach ($output in $outputs) { Copy-Item -Path "$output\*" -Destination '..\..\..\..\..\windows-output' -Recurse -Force }
+          } elseif ($type -eq 'dotnet') {
+            dotnet --version
+            dotnet restore
+            dotnet publish -c Release -r win-x64 --self-contained false -o '..\..\..\..\..\windows-output'
+          } elseif ($type -eq 'python') {
+            python --version
+            pip install --upgrade pip
+            if (Test-Path requirements.txt) { pip install -r requirements.txt }
+            if (Test-Path pyproject.toml) { pip install build; python -m build }
+            New-Item -ItemType Directory -Force -Path '..\..\..\..\..\windows-output' | Out-Null
+            $outputs = @('dist','build') | ForEach-Object { Join-Path (Get-Location) $_ } | Where-Object { Test-Path $_ }
+            if (-not $outputs) { throw 'No Python build output directory found.' }
+            foreach ($output in $outputs) { Copy-Item -Path "$output\*" -Destination '..\..\..\..\..\windows-output' -Recurse -Force }
+          }
+
+      - name: Collect build result
+        if: always()
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Continue'
+          New-Item -ItemType Directory -Force -Path 'build-result' | Out-Null
+          if (Test-Path 'PROJECT_FILES.txt') { Copy-Item 'PROJECT_FILES.txt' 'build-result\' -Force }
+          if (Test-Path 'windows-output') { Copy-Item 'windows-output' 'build-result\windows-output' -Recurse -Force }
+
+      - uses: actions/upload-artifact@v4
+        id: windows_artifact
+        with:
+          name: TradeEntryChecklist-Windows-BUILD-${{ github.run_number }}
+          path: build-result/**
+          if-no-files-found: error
+
+      - name: Show artifact link
+        if: always()
+        shell: pwsh
+        run: |
+          $url = '${{ steps.windows_artifact.outputs.artifact-url }}'
+          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "### Windows build artifact`n`n$url"
