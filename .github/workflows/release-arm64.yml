@@ -14,14 +14,14 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
-      - name: Verify and extract source
+      - name: Extract verified source
         run: |
           mkdir -p diagnostics
           python3 - <<'PY'
           import pathlib, zipfile, hashlib, stat, os
-          a = pathlib.Path('TraderDesk_Android_Project_v1.7.63+119_GPT_SOURCE.zip')
+          a = pathlib.Path('TraderDesk_Android_Project_v1.7.64+120_GPT_SOURCE.zip')
           b = a.read_bytes()
-          assert hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest() == 'ec68a402829552ad4beeebda551217c6b91afba6'
+          assert hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest() == 'f36d17063cc2b295d00ab899c9d1994a10c24ebc'
           root = pathlib.Path('release-source').resolve()
           root.mkdir()
           with zipfile.ZipFile(a) as z:
@@ -46,8 +46,7 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
-      - name: Restore and save Gradle cache
-        uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v4
         with:
           cache-read-only: false
       - uses: android-actions/setup-android@v3
@@ -71,7 +70,7 @@ jobs:
             flutter pub get --enforce-lockfile
             flutter build apk --release --target-platform android-arm64 --no-pub --split-debug-info="$GITHUB_WORKSPACE/symbols"
           } 2>&1 | tee "$GITHUB_WORKSPACE/diagnostics/RELEASE_BUILD.log"
-      - name: Verify APK
+      - name: Verify APK and record size
         id: verify
         run: |
           python3 - <<'PY'
@@ -84,11 +83,11 @@ jobs:
           badging = subprocess.check_output([str(tools/'aapt'), 'dump', 'badging', str(src)], text=True)
           pathlib.Path('diagnostics/APK_BADGING.txt').write_text(badging)
           assert 'application-debuggable' not in badging
-          assert re.search(r"versionName='([^']+)'", badging).group(1) == '1.7.63'
-          assert re.search(r"versionCode='([^']+)'", badging).group(1) == '119'
+          assert re.search(r"versionName='([^']+)'", badging).group(1) == '1.7.64'
+          assert re.search(r"versionCode='([^']+)'", badging).group(1) == '120'
           out = pathlib.Path('release-apk')
           out.mkdir()
-          dst = out/'TraderDesk-1.7.63+119-arm64-v8a-release.apk'
+          dst = out/'TraderDesk-1.7.64+120-arm64-v8a-release.apk'
           shutil.copy2(src, dst)
           with open('diagnostics/SIGNING_REPORT.txt', 'w') as f:
               subprocess.run([str(tools/'apksigner'), 'verify', '--print-certs', str(dst)], check=True, stdout=f)
@@ -100,7 +99,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         id: apk
         with:
-          name: TraderDesk-1.7.63+119-ARM64-RELEASE-${{ github.run_number }}
+          name: TraderDesk-1.7.64+120-ARM64-RELEASE-${{ github.run_number }}
           path: release-apk/*
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
@@ -120,7 +119,7 @@ jobs:
         run: |
           python3 - <<'PY'
           import pathlib, os, json, shutil
-          report = pathlib.Path('.inspection/1.7.63+119')/os.environ['GITHUB_RUN_ID']
+          report = pathlib.Path('.inspection/1.7.64+120')/os.environ['GITHUB_RUN_ID']
           report.mkdir(parents=True, exist_ok=True)
           if pathlib.Path('diagnostics').is_dir():
               shutil.copytree('diagnostics', report, dirs_exist_ok=True)
@@ -129,7 +128,7 @@ jobs:
           PY
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -- .inspection/1.7.63+119/
-          git commit -m 'Publish TraderDesk 1.7.63+119 build result [skip ci]'
+          git add -- .inspection/1.7.64+120/
+          git commit -m 'Publish TraderDesk 1.7.64+120 build result [skip ci]'
           git pull --rebase origin "$GITHUB_REF_NAME"
           git push origin "HEAD:$GITHUB_REF_NAME"
