@@ -9,9 +9,9 @@ concurrency:
   group: traderdesk-release-${{ github.ref }}
   cancel-in-progress: true
 env:
-  RELEASE_VERSION: '1.7.86'
-  RELEASE_CODE: '142'
-  SOURCE_BLOB: ac545d6258a38205560c7d69be4b7ae5ced14eb0
+  RELEASE_VERSION: '1.7.87'
+  RELEASE_CODE: '143'
+  SOURCE_BLOB: 73917a0c6ce65776d360d03b8f7ac7f7360ccf6c
 jobs:
   release:
     runs-on: ubuntu-latest
