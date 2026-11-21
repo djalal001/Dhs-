@@ -1,0 +1,206 @@
+pubspec.yaml
+name: trader_desk
+description: Independent personal trading journal and risk workspace.
+publish_to: 'none'
+version: 1.7.82+138
+environment:
+  sdk: '>=3.13.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  file_picker: ^13.1.0
+  image_picker: ^1.2.4
+  path_provider: ^2.1.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/emojis/emoji-executed-per-plan.gif
+    - assets/emojis/emoji-avoided-entry-fear.gif
+    - assets/emojis/emoji-entered-early.gif
+    - assets/emojis/emoji-entry-conditions-not-met.gif
+    - assets/emojis/emoji-missed-htf-bounce-zone.gif
+    - assets/emojis/emoji-missed-ltf-bounce-zone.gif
+    - assets/emojis/emoji-missed-wick-trendline.gif
+    - assets/emojis/emoji-hesitation-partial-size.gif
+    - assets/emojis/emoji-late-entry.gif
+    - assets/emojis/emoji-stop-loss-moved.gif
+    - assets/emojis/emoji-no-breakout-positive-close.gif
+    - assets/emojis/emoji-exited-early-target.gif
+    - assets/emojis/decisions/decision-enteredEarly.gif
+    - assets/emojis/decisions/decision-exitedEarlyBecauseFearOfLosingProfit.gif
+    - assets/emojis/decisions/decision-hesitationPartialSize.gif
+    - assets/emojis/decisions/decision-lateEntry.gif
+    - assets/emojis/decisions/decision-missedHigherTimeframeBounceArea.gif
+    - assets/emojis/decisions/decision-missedLowerTimeframeBounceArea.gif
+    - assets/emojis/decisions/decision-missedTrendlineFromCandleWicks.gif
+    - assets/emojis/decisions/decision-noBreakoutPositiveClose.gif
+    - assets/emojis/decisions/decision-stopLossReducedWithoutReason.webp
+    - assets/emojis/decisions/decision-stopLossIncreasedWithoutReason.webp
+    - assets/emojis/decisions/decision-noTrendlineSupportsEntryZone.webp
+    - assets/emojis/decisions/decision-missedHigherTimeframeTrendlineIntegration.webp
+    - assets/emojis/decisions/decision-stopLossIncreasedForLiquiditySafety.webp
+    - assets/emojis/decisions/decision-stopLossReducedForNegativeClose.webp
+    - assets/emojis/decisions/decision-partialSizeAwaitingDeepCorrection.webp
+    - assets/emojis/commitment/
+    - assets/emojis/no_entry/
+    - assets/fonts/NOTO_FONTS_OFL_LICENSE.txt
+  fonts:
+    # Arabic UI typeface. This font family provides the Arabic glyphs and UI metrics.
+    - family: NotoSansArabicUI
+      fonts:
+        - asset: assets/fonts/NotoSansArabicUI-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/NotoSansArabicUI-Bold.ttf
+          weight: 700
+    # Script fallback for Latin text (BUY/SELL, symbols, ticker codes and abbreviations).
+    # It keeps multilingual text consistent and avoids platform-dependent system fonts.
+    - family: NotoSans
+      fonts:
+        - asset: assets/fonts/NotoSans-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/NotoSans-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/NotoSans-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/NotoSans-Bold.ttf
+          weight: 700
+
+android/settings.gradle.kts
+pluginManagement {
+    val flutterSdkPath =
+        run {
+            val properties = java.util.Properties()
+            file("local.properties").inputStream().use { properties.load(it) }
+            val flutterSdkPath = properties.getProperty("flutter.sdk")
+            require(flutterSdkPath != null) { "flutter.sdk not set in local.properties" }
+            flutterSdkPath
+        }
+
+    includeBuild("$flutterSdkPath/packages/flutter_tools/gradle")
+
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+plugins {
+    id("dev.flutter.flutter-plugin-loader") version "1.0.0"
+    id("com.android.application") version "9.1.0" apply false
+    id("org.jetbrains.kotlin.android") version "2.4.0" apply false
+}
+
+include(":app")
+
+android/build.gradle.kts
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+val newBuildDir: Directory =
+    rootProject.layout.buildDirectory
+        .dir("../../build")
+        .get()
+rootProject.layout.buildDirectory.value(newBuildDir)
+
+subprojects {
+    val newSubprojectBuildDir: Directory = newBuildDir.dir(project.name)
+    project.layout.buildDirectory.value(newSubprojectBuildDir)
+}
+subprojects {
+    project.evaluationDependsOn(":app")
+}
+
+tasks.register<Delete>("clean") {
+    delete(rootProject.layout.buildDirectory)
+}
+
+android/app/build.gradle.kts
+plugins {
+    id("com.android.application")
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id("dev.flutter.flutter-gradle-plugin")
+}
+
+android {
+    namespace = "com.traderdesk.trader_desk"
+    compileSdk = flutter.compileSdkVersion
+    ndkVersion = flutter.ndkVersion
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    defaultConfig {
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        applicationId = "com.traderdesk.trader_desk"
+        // You can update the following values to match your application needs.
+        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        minSdk = 24
+        targetSdk = flutter.targetSdkVersion
+        // ABI-split APKs are intentionally disabled by this project's build policy.
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
+
+        // This app is distributed for modern 64-bit ARM Android phones only.
+        // Flutter 3.35+ injects default ABI filters for release builds; clear
+        // those defaults and explicitly keep ARM64 for every build variant.
+        // Do not add armeabi-v7a, x86, or x86_64 here.
+        ndk {
+            abiFilters.clear()
+            abiFilters.addAll(listOf("arm64-v8a"))
+        }
+    }
+
+    // Second line of defense: never package JNI libraries for other ABIs,
+    // even if a third-party dependency contains them.
+    packaging {
+        jniLibs {
+            excludes += setOf(
+                "lib/armeabi/**",
+                "lib/armeabi-v7a/**",
+                "lib/x86/**",
+                "lib/x86_64/**",
+            )
+        }
+    }
+
+    buildTypes {
+        release {
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig = signingConfigs.getByName("debug")
+        }
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+    }
+}
+
+flutter {
+    source = "../.."
+}
+
+android/gradle/wrapper/gradle-wrapper.properties
+distributionBase=GRADLE_USER_HOME
+distributionPath=wrapper/dists
+zipStoreBase=GRADLE_USER_HOME
+zipStorePath=wrapper/dists
+distributionUrl=https\://services.gradle.org/distributions/gradle-9.3.1-all.zip
+
