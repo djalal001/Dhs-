@@ -1,0 +1,583 @@
+FILES
+TraderDesk_Android_Project/
+TraderDesk_Android_Project/scripts/
+TraderDesk_Android_Project/scripts/verify_touch2_display_consistency.py
+TraderDesk_Android_Project/scripts/verify_text_cleanup.py
+TraderDesk_Android_Project/scripts/verify_arm64_apk.sh
+TraderDesk_Android_Project/scripts/verify_entry_reason_names_update.py
+TraderDesk_Android_Project/scripts/verify_trade_data_popup_consistency.py
+TraderDesk_Android_Project/scripts/verify_mindset_reference_layout_and_missed_save_gate.py
+TraderDesk_Android_Project/scripts/verify_engulfing_touch2_update.py
+TraderDesk_Android_Project/scripts/verify_result_sign_and_classification_policy.py
+TraderDesk_Android_Project/scripts/verify_sr_bounce_liquidity_label_update.py
+TraderDesk_Android_Project/scripts/verify_popup_and_entry_condition_border_softening.py
+TraderDesk_Android_Project/scripts/verify_font_migration.py
+TraderDesk_Android_Project/scripts/verify_option_edge_opacity_compile_fix.py
+TraderDesk_Android_Project/scripts/verify_mindset_and_behavior_selection_refinement.py
+TraderDesk_Android_Project/scripts/verify_precision_update.py
+TraderDesk_Android_Project/scripts/verify_practical_no_entry_signal_link.py
+TraderDesk_Android_Project/scripts/verify_bounce_direction_gate.py
+TraderDesk_Android_Project/scripts/verify_saved_card_presentation.py
+TraderDesk_Android_Project/scripts/verify_trade_data_selection_and_linked_purple_update.py
+TraderDesk_Android_Project/scripts/build_release_apk.sh
+TraderDesk_Android_Project/scripts/verify_base_anchor_update.py
+TraderDesk_Android_Project/scripts/verify_missed_trade_outcome_filter.py
+TraderDesk_Android_Project/scripts/verify_timeframe_header_update.py
+TraderDesk_Android_Project/scripts/verify_saved_trade_detail_update.py
+TraderDesk_Android_Project/scripts/apply_break_even_update.py
+TraderDesk_Android_Project/scripts/verify_break_even_type_update.py
+TraderDesk_Android_Project/UPDATE_REPORT_1.7.76+132.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.60+116.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.62+118.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.54+110.md
+TraderDesk_Android_Project/UPDATE_REPORT_1.7.75+131.md
+TraderDesk_Android_Project/QA_REPORT_AR.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.34+90.md
+TraderDesk_Android_Project/SIZE_OPTIMIZATION_AR.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.71+127.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.45+101.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.69+125.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.30+86.md
+TraderDesk_Android_Project/UPDATE_REPORT_1.7.80+136.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.39+95.md
+TraderDesk_Android_Project/UPDATE_REPORT_1.7.83+139.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.58+114.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.48+104.md
+TraderDesk_Android_Project/.gitignore
+TraderDesk_Android_Project/UPDATE_REPORT_1.7.94+150.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.33+89.md
+TraderDesk_Android_Project/UPDATE_REPORT_1.7.87+143.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.52+108.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.50+106.md
+TraderDesk_Android_Project/RESUME_AR_1.3.8_build33.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.53+109.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.59+115.md
+TraderDesk_Android_Project/android/
+TraderDesk_Android_Project/android/gradle/
+TraderDesk_Android_Project/android/gradle/wrapper/
+TraderDesk_Android_Project/android/gradle/wrapper/gradle-wrapper.jar
+TraderDesk_Android_Project/android/gradle/wrapper/gradle-wrapper.properties
+TraderDesk_Android_Project/android/app/
+TraderDesk_Android_Project/android/app/build.gradle.kts
+TraderDesk_Android_Project/android/app/src/
+TraderDesk_Android_Project/android/app/src/main/
+TraderDesk_Android_Project/android/app/src/main/res/
+TraderDesk_Android_Project/android/app/src/main/res/mipmap-hdpi/
+TraderDesk_Android_Project/android/app/src/main/res/mipmap-hdpi/ic_launcher.png
+TraderDesk_Android_Project/android/app/src/main/res/mipmap-xhdpi/
+TraderDesk_Android_Project/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png
+TraderDesk_Android_Project/android/app/src/main/res/mipmap-xxxhdpi/
+TraderDesk_Android_Project/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+TraderDesk_Android_Project/android/app/src/main/res/values/
+TraderDesk_Android_Project/android/app/src/main/res/values/styles.xml
+TraderDesk_Android_Project/android/app/src/main/res/values-night/
+TraderDesk_Android_Project/android/app/src/main/res/values-night/styles.xml
+TraderDesk_Android_Project/android/app/src/main/res/mipmap-xxhdpi/
+TraderDesk_Android_Project/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
+TraderDesk_Android_Project/android/app/src/main/res/drawable-v21/
+TraderDesk_Android_Project/android/app/src/main/res/drawable-v21/launch_background.xml
+TraderDesk_Android_Project/android/app/src/main/res/mipmap-mdpi/
+TraderDesk_Android_Project/android/app/src/main/res/mipmap-mdpi/ic_launcher.png
+TraderDesk_Android_Project/android/app/src/main/res/drawable/
+TraderDesk_Android_Project/android/app/src/main/res/drawable/ic_traderdesk.xml
+TraderDesk_Android_Project/android/app/src/main/res/drawable/launch_background.xml
+TraderDesk_Android_Project/android/app/src/main/java/
+TraderDesk_Android_Project/android/app/src/main/java/io/
+TraderDesk_Android_Project/android/app/src/main/java/io/flutter/
+TraderDesk_Android_Project/android/app/src/main/java/io/flutter/plugins/
+TraderDesk_Android_Project/android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
+TraderDesk_Android_Project/android/app/src/main/AndroidManifest.xml
+TraderDesk_Android_Project/android/app/src/main/kotlin/
+TraderDesk_Android_Project/android/app/src/main/kotlin/com/
+TraderDesk_Android_Project/android/app/src/main/kotlin/com/traderdesk/
+TraderDesk_Android_Project/android/app/src/main/kotlin/com/traderdesk/trader_desk/
+TraderDesk_Android_Project/android/app/src/main/kotlin/com/traderdesk/trader_desk/MainActivity.kt
+TraderDesk_Android_Project/android/app/src/profile/
+TraderDesk_Android_Project/android/app/src/profile/AndroidManifest.xml
+TraderDesk_Android_Project/android/app/src/debug/
+TraderDesk_Android_Project/android/app/src/debug/AndroidManifest.xml
+TraderDesk_Android_Project/android/gradle.properties
+TraderDesk_Android_Project/android/gradlew.bat
+TraderDesk_Android_Project/android/trader_desk_android.iml
+TraderDesk_Android_Project/android/.gitignore
+TraderDesk_Android_Project/android/build.gradle.kts
+TraderDesk_Android_Project/android/gradlew
+TraderDesk_Android_Project/android/settings.gradle.kts
+TraderDesk_Android_Project/lib/
+TraderDesk_Android_Project/lib/domain/
+TraderDesk_Android_Project/lib/domain/trade_entry_catalog.dart
+TraderDesk_Android_Project/lib/domain/risk_calculator.dart
+TraderDesk_Android_Project/lib/domain/trade_analytics.dart
+TraderDesk_Android_Project/lib/domain/trade_ordering.dart
+TraderDesk_Android_Project/lib/models/
+TraderDesk_Android_Project/lib/models/trading_account.dart
+TraderDesk_Android_Project/lib/models/trade.dart
+TraderDesk_Android_Project/lib/screens/
+TraderDesk_Android_Project/lib/screens/trade_form_screen.dart
+TraderDesk_Android_Project/lib/screens/settings_screen.dart
+TraderDesk_Android_Project/lib/screens/accounts_screen.dart
+TraderDesk_Android_Project/lib/screens/days_screen.dart
+TraderDesk_Android_Project/lib/screens/menu_screen.dart
+TraderDesk_Android_Project/lib/screens/trades_screen.dart
+TraderDesk_Android_Project/lib/screens/home_screen.dart
+TraderDesk_Android_Project/lib/l10n/
+TraderDesk_Android_Project/lib/l10n/app_strings.dart
+TraderDesk_Android_Project/lib/theme/
+TraderDesk_Android_Project/lib/theme/trade_detail_palette.dart
+TraderDesk_Android_Project/lib/theme/trade_outcome_palette.dart
+TraderDesk_Android_Project/lib/theme/app_theme.dart
+TraderDesk_Android_Project/lib/state/
+TraderDesk_Android_Project/lib/state/app_controller.dart
+TraderDesk_Android_Project/lib/state/app_scope.dart
+TraderDesk_Android_Project/lib/data/
+TraderDesk_Android_Project/lib/data/local_store.dart
+TraderDesk_Android_Project/lib/data/streaming_backup_decoder.dart
+TraderDesk_Android_Project/lib/data/trade_file_service.dart
+TraderDesk_Android_Project/lib/main.dart
+TraderDesk_Android_Project/lib/widgets/
+TraderDesk_Android_Project/lib/widgets/decision_section_logo.dart
+TraderDesk_Android_Project/lib/widgets/trade_image_preview.dart
+TraderDesk_Android_Project/lib/widgets/decision_option_emoji.dart
+TraderDesk_Android_Project/lib/widgets/trade_info_tile.dart
+TraderDesk_Android_Project/lib/widgets/trade_execution_journal.dart
+TraderDesk_Android_Project/lib/widgets/equity_curve.dart
+TraderDesk_Android_Project/lib/widgets/trade_entry_setup_chips.dart
+TraderDesk_Android_Project/lib/widgets/strategy_adherence_chip.dart
+TraderDesk_Android_Project/lib/widgets/common.dart
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.64+120.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.38+94.md
+TraderDesk_Android_Project/UPDATE_REPORT_1.7.85+141.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.37+93.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.40+96.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.49+105.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.57+113.md
+TraderDesk_Android_Project/UPDATE_REPORT_1.7.98+154.md
+TraderDesk_Android_Project/UPDATE_REPORT_1.7.77+133.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.51+107.md
+TraderDesk_Android_Project/pubspec.lock
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.67+123.md
+TraderDesk_Android_Project/INSPECTION_AND_IMPLEMENTATION_AR.md
+TraderDesk_Android_Project/pubspec.yaml
+TraderDesk_Android_Project/UPDATE_REPORT_1.7.89+145.md
+TraderDesk_Android_Project/UPDATE_REPORT_1.7.81+137.md
+TraderDesk_Android_Project/README.md
+TraderDesk_Android_Project/BUILD_INSTRUCTIONS_AR.md
+TraderDesk_Android_Project/RELEASE_NOTES_AR.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.32+88.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.43+99.md
+TraderDesk_Android_Project/UPDATE_REPORT_1.7.90+146.md
+TraderDesk_Android_Project/ANALYSIS_AR.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.61+117.md
+TraderDesk_Android_Project/UPDATE_REPORT_1.7.74+130.md
+TraderDesk_Android_Project/UPDATE_REPORT_1.7.99+155.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.36+92.md
+TraderDesk_Android_Project/VERIFIED_ASSET_INVENTORY_AR.txt
+TraderDesk_Android_Project/AGENTS.md
+TraderDesk_Android_Project/test/
+TraderDesk_Android_Project/test/app_controller_storage_failure_test.dart
+TraderDesk_Android_Project/test/trade_detail_layout_test.dart
+TraderDesk_Android_Project/test/trade_behavior_summary_test.dart
+TraderDesk_Android_Project/test/local_store_test.dart
+TraderDesk_Android_Project/test/entry_conditions_test.dart
+TraderDesk_Android_Project/test/real_size_backup_stress_test.dart
+TraderDesk_Android_Project/test/trade_execution_journal_test.dart
+TraderDesk_Android_Project/test/trade_card_text_test.dart
+TraderDesk_Android_Project/test/trade_classification_test.dart
+TraderDesk_Android_Project/test/trade_decision_emoji_test.dart
+TraderDesk_Android_Project/test/app_font_family_test.dart
+TraderDesk_Android_Project/test/trades_screen_filter_test.dart
+TraderDesk_Android_Project/test/trading_app_test.dart
+TraderDesk_Android_Project/test/trade_detail_palette_test.dart
+TraderDesk_Android_Project/test/trading_logic_test.dart
+TraderDesk_Android_Project/test/days_calendar_test.dart
+TraderDesk_Android_Project/test/large_history_ui_test.dart
+TraderDesk_Android_Project/test/trade_image_cleanup_test.dart
+TraderDesk_Android_Project/test/trade_image_preview_test.dart
+TraderDesk_Android_Project/test/custom_confirmation_test.dart
+TraderDesk_Android_Project/test/strategy_adherence_test.dart
+TraderDesk_Android_Project/test/trade_entry_catalog_test.dart
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.65+121.md
+TraderDesk_Android_Project/UPDATE_REPORT_1.7.86+142.md
+TraderDesk_Android_Project/UPDATE_REPORT_1.7.82+138.md
+TraderDesk_Android_Project/PACKAGE_INFO_AR.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.31+87.md
+TraderDesk_Android_Project/assets/
+TraderDesk_Android_Project/assets/fonts/
+TraderDesk_Android_Project/assets/fonts/NOTO_FONTS_OFL_LICENSE.txt
+TraderDesk_Android_Project/assets/fonts/NotoSansArabicUI-Bold.ttf
+TraderDesk_Android_Project/assets/fonts/NotoSans-Regular.ttf
+TraderDesk_Android_Project/assets/fonts/NotoSans-Medium.ttf
+TraderDesk_Android_Project/assets/fonts/NotoSans-SemiBold.ttf
+TraderDesk_Android_Project/assets/fonts/NotoSansArabicUI-Regular.ttf
+TraderDesk_Android_Project/assets/fonts/NotoSans-Bold.ttf
+TraderDesk_Android_Project/assets/emojis/
+TraderDesk_Android_Project/assets/emojis/emoji-entry-conditions-not-met.svg
+TraderDesk_Android_Project/assets/emojis/emoji-entered-early.svg
+TraderDesk_Android_Project/assets/emojis/emoji-entry-conditions-not-met.gif
+TraderDesk_Android_Project/assets/emojis/emoji-executed-per-plan.gif
+TraderDesk_Android_Project/assets/emojis/no_entry/
+TraderDesk_Android_Project/assets/emojis/no_entry/waitedDeeperRetestDespiteConfirmation.webp
+TraderDesk_Android_Project/assets/emojis/no_entry/hesitationUnclearScenario.webp
+TraderDesk_Android_Project/assets/emojis/no_entry/fearRepeatLossAfterLoss.webp
+TraderDesk_Android_Project/assets/emojis/no_entry/fearLossNoHistory.webp
+TraderDesk_Android_Project/assets/emojis/no_entry/fearGivingBackProfit.webp
+TraderDesk_Android_Project/assets/emojis/emoji-missed-wick-trendline.gif
+TraderDesk_Android_Project/assets/emojis/emoji-missed-wick-trendline.svg
+TraderDesk_Android_Project/assets/emojis/emoji-hesitation-partial-size.gif
+TraderDesk_Android_Project/assets/emojis/emoji-exited-early-target.gif
+TraderDesk_Android_Project/assets/emojis/emoji-missed-htf-bounce-zone.gif
+TraderDesk_Android_Project/assets/emojis/emoji-no-breakout-positive-close.gif
+TraderDesk_Android_Project/assets/emojis/emoji-avoided-entry-fear.gif
+TraderDesk_Android_Project/assets/emojis/emoji-executed-per-plan.svg
+TraderDesk_Android_Project/assets/emojis/emoji-missed-htf-bounce-zone.svg
+TraderDesk_Android_Project/assets/emojis/emoji-exited-early-target.svg
+TraderDesk_Android_Project/assets/emojis/emoji-missed-ltf-bounce-zone.svg
+TraderDesk_Android_Project/assets/emojis/emoji-entered-early.gif
+TraderDesk_Android_Project/assets/emojis/emoji-late-entry.svg
+TraderDesk_Android_Project/assets/emojis/emoji-stop-loss-moved.gif
+TraderDesk_Android_Project/assets/emojis/emoji-stop-loss-moved.svg
+TraderDesk_Android_Project/assets/emojis/emoji-avoided-entry-fear.svg
+TraderDesk_Android_Project/assets/emojis/decisions/
+TraderDesk_Android_Project/assets/emojis/decisions/decision-stopLossIncreasedWithoutReason.webp
+TraderDesk_Android_Project/assets/emojis/decisions/decision-lateEntry.gif
+TraderDesk_Android_Project/assets/emojis/decisions/decision-stopLossIncreasedForLiquiditySafety.webp
+TraderDesk_Android_Project/assets/emojis/decisions/decision-missedLowerTimeframeBounceArea.gif
+TraderDesk_Android_Project/assets/emojis/decisions/decision-missedTrendlineFromCandleWicks.gif
+TraderDesk_Android_Project/assets/emojis/decisions/decision-stopLossReducedForNegativeClose.webp
+TraderDesk_Android_Project/assets/emojis/decisions/decision-stopLossReducedWithoutReason.webp
+TraderDesk_Android_Project/assets/emojis/decisions/decision-noTrendlineSupportsEntryZone.webp
+TraderDesk_Android_Project/assets/emojis/decisions/decision-missedHigherTimeframeBounceArea.gif
+TraderDesk_Android_Project/assets/emojis/decisions/decision-partialSizeAwaitingDeepCorrection.webp
+TraderDesk_Android_Project/assets/emojis/decisions/decision-noBreakoutPositiveClose.gif
+TraderDesk_Android_Project/assets/emojis/decisions/decision-enteredEarly.gif
+TraderDesk_Android_Project/assets/emojis/decisions/decision-missedHigherTimeframeTrendlineIntegration.webp
+TraderDesk_Android_Project/assets/emojis/decisions/decision-hesitationPartialSize.gif
+TraderDesk_Android_Project/assets/emojis/decisions/decision-exitedEarlyBecauseFearOfLosingProfit.gif
+TraderDesk_Android_Project/assets/emojis/emoji-hesitation-partial-size.svg
+TraderDesk_Android_Project/assets/emojis/commitment/
+TraderDesk_Android_Project/assets/emojis/commitment/fullPlanCompliance.webp
+TraderDesk_Android_Project/assets/emojis/commitment/manualExitNearTarget.webp
+TraderDesk_Android_Project/assets/emojis/commitment/breakevenStopToEntry.webp
+TraderDesk_Android_Project/assets/emojis/commitment/autoExitAtTarget.webp
+TraderDesk_Android_Project/assets/emojis/commitment/enteredDespiteFear.webp
+TraderDesk_Android_Project/assets/emojis/emoji-missed-ltf-bounce-zone.gif
+TraderDesk_Android_Project/assets/emojis/emoji-late-entry.gif
+TraderDesk_Android_Project/FINAL_REVIEW_AR.md
+TraderDesk_Android_Project/RESUME_AR.md
+TraderDesk_Android_Project/design_tokens.json
+TraderDesk_Android_Project/.github/
+TraderDesk_Android_Project/.github/copilot-instructions.md
+TraderDesk_Android_Project/.github/workflows/
+TraderDesk_Android_Project/.github/workflows/android-build.yml
+TraderDesk_Android_Project/UPDATE_REPORT_1.7.73+129.md
+TraderDesk_Android_Project/UPDATE_REPORT_1.7.84+140.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.63+119.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.55+111.md
+TraderDesk_Android_Project/UPDATE_REPORT_1.7.95+151.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.46+102.md
+TraderDesk_Android_Project/BUILD_INFO_AR.md
+TraderDesk_Android_Project/BEHAVIOR_LAB_ANALYSIS_AR.md
+TraderDesk_Android_Project/ASSET_INVENTORY.txt
+TraderDesk_Android_Project/UPDATE_REPORT_1.7.97+153.md
+TraderDesk_Android_Project/UPDATE_REPORT_1.7.92+148.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.66+122.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.72+128.md
+TraderDesk_Android_Project/UPDATE_REPORT_1.7.88+144.md
+TraderDesk_Android_Project/UPDATE_REPORT_1.7.78+134.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.44+100.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.68+124.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.41+97.md
+TraderDesk_Android_Project/UPDATE_REPORT_1.7.96+152.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.70+126.md
+TraderDesk_Android_Project/UPDATE_REVIEW_AR_1.7.56+112.md
+TraderDesk_Android_Project/UPDATE_REPORT_1.7.100+156.md
+
+--- TraderDesk_Android_Project/android/gradle/wrapper/gradle-wrapper.properties ---
+distributionBase=GRADLE_USER_HOME
+distributionPath=wrapper/dists
+zipStoreBase=GRADLE_USER_HOME
+zipStorePath=wrapper/dists
+distributionUrl=https\://services.gradle.org/distributions/gradle-9.3.1-all.zip
+
+
+--- TraderDesk_Android_Project/android/app/build.gradle.kts ---
+plugins {
+    id("com.android.application")
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id("dev.flutter.flutter-gradle-plugin")
+}
+
+android {
+    namespace = "com.traderdesk.trader_desk"
+    compileSdk = flutter.compileSdkVersion
+    ndkVersion = flutter.ndkVersion
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    defaultConfig {
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        applicationId = "com.traderdesk.trader_desk"
+        // You can update the following values to match your application needs.
+        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        minSdk = 24
+        targetSdk = flutter.targetSdkVersion
+        // ABI-split APKs are intentionally disabled by this project's build policy.
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
+
+        // This app is distributed for modern 64-bit ARM Android phones only.
+        // Flutter 3.35+ injects default ABI filters for release builds; clear
+        // those defaults and explicitly keep ARM64 for every build variant.
+        // Do not add armeabi-v7a, x86, or x86_64 here.
+        ndk {
+            abiFilters.clear()
+            abiFilters.addAll(listOf("arm64-v8a"))
+        }
+    }
+
+    // Second line of defense: never package JNI libraries for other ABIs,
+    // even if a third-party dependency contains them.
+    packaging {
+        jniLibs {
+            excludes += setOf(
+                "lib/armeabi/**",
+                "lib/armeabi-v7a/**",
+                "lib/x86/**",
+                "lib/x86_64/**",
+            )
+        }
+    }
+
+    buildTypes {
+        release {
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig = signingConfigs.getByName("debug")
+        }
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+    }
+}
+
+flutter {
+    source = "../.."
+}
+
+
+--- TraderDesk_Android_Project/android/app/src/main/AndroidManifest.xml ---
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application
+        android:label="دفتر المتداول"
+        android:name="${applicationName}"
+        android:icon="@drawable/ic_traderdesk">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:taskAffinity=""
+            android:theme="@style/LaunchTheme"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize">
+            <!-- Specifies an Android theme to apply to this Activity as soon as
+                 the Android process has started. This theme is visible to the user
+                 while the Flutter UI initializes. After that, this theme continues
+                 to determine the Window background behind the Flutter UI. -->
+            <meta-data
+              android:name="io.flutter.embedding.android.NormalTheme"
+              android:resource="@style/NormalTheme"
+              />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <!-- Don't delete the meta-data below.
+             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+    </application>
+    <!-- Required to query activities that can process text, see:
+         https://developer.android.com/training/package-visibility and
+         https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
+
+         In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin. -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.PROCESS_TEXT"/>
+            <data android:mimeType="text/plain"/>
+        </intent>
+    </queries>
+</manifest>
+
+
+--- TraderDesk_Android_Project/android/app/src/profile/AndroidManifest.xml ---
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- The INTERNET permission is required for development. Specifically,
+         the Flutter tool needs it to communicate with the running application
+         to allow setting breakpoints, to provide hot reload, etc.
+    -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+</manifest>
+
+
+--- TraderDesk_Android_Project/android/app/src/debug/AndroidManifest.xml ---
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- The INTERNET permission is required for development. Specifically,
+         the Flutter tool needs it to communicate with the running application
+         to allow setting breakpoints, to provide hot reload, etc.
+    -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+</manifest>
+
+
+--- TraderDesk_Android_Project/android/gradle.properties ---
+org.gradle.jvmargs=-Xmx8G -XX:MaxMetaspaceSize=4G -XX:ReservedCodeCacheSize=512m -XX:+HeapDumpOnOutOfMemoryError
+android.useAndroidX=true
+# This newDsl flag was added by the Flutter template
+android.newDsl=false
+# This builtInKotlin flag was added by the Flutter template
+android.builtInKotlin=false
+# Avoid incremental cache path failures when Flutter and Pub caches are on
+# different Windows drives.
+kotlin.incremental=false
+
+
+--- TraderDesk_Android_Project/android/build.gradle.kts ---
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+val newBuildDir: Directory =
+    rootProject.layout.buildDirectory
+        .dir("../../build")
+        .get()
+rootProject.layout.buildDirectory.value(newBuildDir)
+
+subprojects {
+    val newSubprojectBuildDir: Directory = newBuildDir.dir(project.name)
+    project.layout.buildDirectory.value(newSubprojectBuildDir)
+}
+subprojects {
+    project.evaluationDependsOn(":app")
+}
+
+tasks.register<Delete>("clean") {
+    delete(rootProject.layout.buildDirectory)
+}
+
+
+--- TraderDesk_Android_Project/android/settings.gradle.kts ---
+pluginManagement {
+    val flutterSdkPath =
+        run {
+            val properties = java.util.Properties()
+            file("local.properties").inputStream().use { properties.load(it) }
+            val flutterSdkPath = properties.getProperty("flutter.sdk")
+            require(flutterSdkPath != null) { "flutter.sdk not set in local.properties" }
+            flutterSdkPath
+        }
+
+    includeBuild("$flutterSdkPath/packages/flutter_tools/gradle")
+
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+plugins {
+    id("dev.flutter.flutter-plugin-loader") version "1.0.0"
+    id("com.android.application") version "9.1.0" apply false
+    id("org.jetbrains.kotlin.android") version "2.4.0" apply false
+}
+
+include(":app")
+
+
+--- TraderDesk_Android_Project/pubspec.yaml ---
+name: trader_desk
+description: Independent personal trading journal and risk workspace.
+publish_to: 'none'
+version: 1.7.100+156
+environment:
+  sdk: '>=3.13.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  file_picker: ^13.1.0
+  image_picker: ^1.2.4
+  path_provider: ^2.1.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/emojis/emoji-executed-per-plan.gif
+    - assets/emojis/emoji-avoided-entry-fear.gif
+    - assets/emojis/emoji-entered-early.gif
+    - assets/emojis/emoji-entry-conditions-not-met.gif
+    - assets/emojis/emoji-missed-htf-bounce-zone.gif
+    - assets/emojis/emoji-missed-ltf-bounce-zone.gif
+    - assets/emojis/emoji-missed-wick-trendline.gif
+    - assets/emojis/emoji-hesitation-partial-size.gif
+    - assets/emojis/emoji-late-entry.gif
+    - assets/emojis/emoji-stop-loss-moved.gif
+    - assets/emojis/emoji-no-breakout-positive-close.gif
+    - assets/emojis/emoji-exited-early-target.gif
+    - assets/emojis/decisions/decision-enteredEarly.gif
+    - assets/emojis/decisions/decision-exitedEarlyBecauseFearOfLosingProfit.gif
+    - assets/emojis/decisions/decision-hesitationPartialSize.gif
+    - assets/emojis/decisions/decision-lateEntry.gif
+    - assets/emojis/decisions/decision-missedHigherTimeframeBounceArea.gif
+    - assets/emojis/decisions/decision-missedLowerTimeframeBounceArea.gif
+    - assets/emojis/decisions/decision-missedTrendlineFromCandleWicks.gif
+    - assets/emojis/decisions/decision-noBreakoutPositiveClose.gif
+    - assets/emojis/decisions/decision-stopLossReducedWithoutReason.webp
+    - assets/emojis/decisions/decision-stopLossIncreasedWithoutReason.webp
+    - assets/emojis/decisions/decision-noTrendlineSupportsEntryZone.webp
+    - assets/emojis/decisions/decision-missedHigherTimeframeTrendlineIntegration.webp
+    - assets/emojis/decisions/decision-stopLossIncreasedForLiquiditySafety.webp
+    - assets/emojis/decisions/decision-stopLossReducedForNegativeClose.webp
+    - assets/emojis/decisions/decision-partialSizeAwaitingDeepCorrection.webp
+    - assets/emojis/commitment/
+    - assets/emojis/no_entry/
+    - assets/fonts/NOTO_FONTS_OFL_LICENSE.txt
+  fonts:
+    # Arabic UI typeface. This font family provides the Arabic glyphs and UI metrics.
+    - family: NotoSansArabicUI
+      fonts:
+        - asset: assets/fonts/NotoSansArabicUI-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/NotoSansArabicUI-Bold.ttf
+          weight: 700
+    # Script fallback for Latin text (BUY/SELL, symbols, ticker codes and abbreviations).
+    # It keeps multilingual text consistent and avoids platform-dependent system fonts.
+    - family: NotoSans
+      fonts:
+        - asset: assets/fonts/NotoSans-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/NotoSans-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/NotoSans-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/NotoSans-Bold.ttf
+          weight: 700
