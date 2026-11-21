@@ -1,0 +1,46 @@
+name: Inspect manus Android source
+on:
+  push:
+    paths: ['.github/workflows/inspect-manus-v17.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read configuration without executing source
+        run: |
+          python3 - <<'PY'
+          import pathlib, zipfile, hashlib
+          a = pathlib.Path('TraderDesk_Android_Project_v1.7.zip')
+          b = a.read_bytes()
+          assert hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest() == 'b77b1a5672442f0e496c906df8687372ec86349d'
+          report = []
+          with zipfile.ZipFile(a) as z:
+              entries = z.infolist()
+              assert len(entries) <= 20000 and sum(e.file_size for e in entries) <= 1073741824
+              assert len({e.filename for e in entries}) == len(entries)
+              report.append('FILES\n'+'\n'.join(e.filename for e in entries))
+              total = 0
+              for e in entries:
+                  p = pathlib.PurePosixPath(e.filename)
+                  selected = p.name in {'pubspec.yaml', 'gradle-wrapper.properties', '.metadata', '.fvmrc', 'AndroidManifest.xml', 'gradle.properties'} or p.suffix in {'.gradle', '.kts', '.pro'}
+                  if selected and not e.is_dir():
+                      assert e.file_size <= 200000
+                      total += e.file_size
+                      assert total <= 2000000
+                      report.append('\n--- '+e.filename+' ---\n'+z.read(e).decode('utf-8', errors='replace'))
+          out = pathlib.Path('.inspection/manus-v17')
+          out.mkdir(parents=True, exist_ok=True)
+          (out/'CONFIG.txt').write_text('\n'.join(report))
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .inspection/manus-v17/CONFIG.txt
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Publish manus configuration inspection [skip ci]'
+          git pull --rebase origin main
+          git push origin HEAD:main
