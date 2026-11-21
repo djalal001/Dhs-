@@ -9,24 +9,20 @@ concurrency:
   group: traderdesk-release-${{ github.ref }}
   cancel-in-progress: true
 env:
-  RELEASE_VERSION: '1.7.90'
-  RELEASE_CODE: '146'
-  SOURCE_BLOB: b27e185a5f1a8f25e5dfd9543a1b5205afca5b39
+  RELEASE: '1.7.92+148'
 jobs:
   release:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
-      - name: Verify and extract Android source
+      - name: Verify and inspect source
         run: |
-          mkdir -p diagnostics
           python3 - <<'PY'
-          import hashlib, os, pathlib, stat, zipfile
-          v, c = os.environ['RELEASE_VERSION'], os.environ['RELEASE_CODE']
-          a = pathlib.Path(f'TraderDesk_Android_Project_v{v}+{c}_GPT_SOURCE.zip')
+          import os, pathlib, zipfile, stat, hashlib
+          a = pathlib.Path('TraderDesk_Android_Project_v1.7.92+148_GPT_SOURCE.zip')
           b = a.read_bytes()
-          assert hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest() == os.environ['SOURCE_BLOB']
+          assert hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest() == 'c5f0f2c4108a34edde8b13ea9be6a0d832f4dd1d'
           root = pathlib.Path('release-source').resolve()
           root.mkdir()
           with zipfile.ZipFile(a) as z:
@@ -36,17 +32,17 @@ jobs:
               for e in entries:
                   p = pathlib.PurePosixPath(e.filename)
                   assert not p.is_absolute() and '..' not in p.parts and '\\' not in e.filename
-                  assert not any(ord(ch) < 32 for ch in e.filename)
+                  assert not any(ord(c) < 32 for c in e.filename)
                   assert not stat.S_ISLNK(e.external_attr >> 16)
                   assert (root/e.filename).resolve().is_relative_to(root)
               assert z.testzip() is None
               z.extractall(root)
           projects = [p.parent for p in root.rglob('pubspec.yaml') if (p.parent/'android').is_dir() and (p.parent/'lib').is_dir()]
           assert len(projects) == 1
-          project = projects[0]
-          (project/'android/local.properties').unlink(missing_ok=True)
+          p = projects[0]
+          (p/'android/local.properties').unlink(missing_ok=True)
           with open(os.environ['GITHUB_ENV'], 'a') as f:
-              f.write(f'PROJECT_DIR={project}\n')
+              f.write(f'PROJECT_DIR={p}\n')
           PY
       - uses: actions/setup-java@v4
         with:
@@ -63,49 +59,45 @@ jobs:
           flutter-version: '3.47.7'
           channel: stable
           cache: true
-      - name: Inspect and build Release AOT ARM64
+      - name: Inspect and build ARM64 Release AOT
         id: build
         shell: bash
         run: |
           set -euo pipefail
           cd "$PROJECT_DIR"
           flutter --version
-          grep -E '^version[[:space:]]*:' pubspec.yaml
-          test -f pubspec.lock
-          grep '^distributionUrl=' android/gradle/wrapper/gradle-wrapper.properties
+          cat pubspec.yaml
+          find android -type f \( -name '*.gradle' -o -name '*.kts' -o -name 'gradle-wrapper.properties' -o -name '*.pro' \) -print -exec cat {} \;
           flutter pub get --enforce-lockfile
           flutter build apk --release --target-platform android-arm64 --no-pub --split-debug-info="$GITHUB_WORKSPACE/symbols"
-      - name: Verify APK and record size
+      - name: Verify and measure APK
         id: verify
         run: |
           python3 - <<'PY'
-          import hashlib, json, os, pathlib, re, shutil, subprocess, zipfile
-          v, c = os.environ['RELEASE_VERSION'], os.environ['RELEASE_CODE']
+          import pathlib, os, zipfile, subprocess, re, shutil, hashlib, json
           src = pathlib.Path(os.environ['PROJECT_DIR'])/'build/app/outputs/flutter-apk/app-release.apk'
           with zipfile.ZipFile(src) as z:
-              assert {p.split('/')[1] for p in z.namelist() if p.startswith('lib/') and p.endswith('.so')} == {'arm64-v8a'}
+              assert {n.split('/')[1] for n in z.namelist() if n.startswith('lib/') and n.endswith('.so')} == {'arm64-v8a'}
               assert 'lib/arm64-v8a/libapp.so' in z.namelist()
           tools = pathlib.Path(os.environ['ANDROID_HOME'])/'build-tools/36.0.0'
-          badging = subprocess.check_output([str(tools/'aapt'), 'dump', 'badging', str(src)], text=True)
-          assert 'application-debuggable' not in badging
-          assert re.search(r"versionName='([^']+)'", badging).group(1) == v
-          assert re.search(r"versionCode='([^']+)'", badging).group(1) == c
-          out = pathlib.Path('release-apk')
-          out.mkdir()
-          dst = out/f'TraderDesk-{v}+{c}-arm64-v8a-release.apk'
+          text = subprocess.check_output([str(tools/'aapt'), 'dump', 'badging', str(src)], text=True)
+          assert 'application-debuggable' not in text
+          assert re.search(r"versionName='([^']+)'", text).group(1) == '1.7.92'
+          assert re.search(r"versionCode='([^']+)'", text).group(1) == '148'
+          subprocess.run([str(tools/'apksigner'), 'verify', '--print-certs', str(src)], check=True)
+          pathlib.Path('release-apk').mkdir()
+          dst = pathlib.Path('release-apk/TraderDesk-1.7.92+148-arm64-v8a-release.apk')
           shutil.copy2(src, dst)
-          subprocess.run([str(tools/'apksigner'), 'verify', '--print-certs', str(dst)], check=True)
-          size = dst.stat().st_size
-          info = dict(filename=dst.name, bytes=size, MiB=round(size/1048576, 2), sha256=hashlib.sha256(dst.read_bytes()).hexdigest())
-          data = json.dumps(info, indent=2)+'\n'
-          pathlib.Path('diagnostics/APK_INFO.json').write_text(data)
+          info = dict(filename=dst.name, bytes=dst.stat().st_size, MiB=round(dst.stat().st_size/1048576, 2), sha256=hashlib.sha256(dst.read_bytes()).hexdigest())
+          pathlib.Path('diagnostics').mkdir(exist_ok=True)
+          pathlib.Path('diagnostics/APK_INFO.json').write_text(json.dumps(info, indent=2))
           with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f:
-              f.write(data)
+              f.write(json.dumps(info, indent=2))
           PY
       - uses: actions/upload-artifact@v4
         id: apk
         with:
-          name: TraderDesk-${{ env.RELEASE_VERSION }}+${{ env.RELEASE_CODE }}-ARM64-RELEASE-${{ github.run_number }}
+          name: TraderDesk-1.7.92+148-ARM64-RELEASE-${{ github.run_number }}
           path: release-apk/*.apk
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
@@ -121,18 +113,19 @@ jobs:
           ARTIFACT_URL: ${{ steps.apk.outputs.artifact-url }}
           BUILD_STATUS: ${{ job.status }}
         run: |
-          report=".inspection/$RELEASE_VERSION+$RELEASE_CODE/$GITHUB_RUN_ID"
-          mkdir -p "$report"
-          if [[ -f diagnostics/APK_INFO.json ]]; then cp diagnostics/APK_INFO.json "$report/"; fi
-          python3 - "$report" <<'PY'
-          import json, os, pathlib, sys
+          python3 - <<'PY'
+          import os, pathlib, json, shutil
           e = os.environ
+          p = pathlib.Path('.inspection')/e['RELEASE']/e['GITHUB_RUN_ID']
+          p.mkdir(parents=True, exist_ok=True)
+          if pathlib.Path('diagnostics/APK_INFO.json').exists():
+              shutil.copy2('diagnostics/APK_INFO.json', p/'APK_INFO.json')
           result = dict(status=e['BUILD_STATUS'], steps=json.loads(e['STEPS_JSON']), artifact_url=e.get('ARTIFACT_URL', ''), run_url=e['GITHUB_SERVER_URL']+'/'+e['GITHUB_REPOSITORY']+'/actions/runs/'+e['GITHUB_RUN_ID'], source_commit=e['GITHUB_SHA'])
-          (pathlib.Path(sys.argv[1])/'RESULT.json').write_text(json.dumps(result, indent=2))
+          (p/'RESULT.json').write_text(json.dumps(result, indent=2))
           PY
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -- "$report/"
-          git commit -m "Publish TraderDesk $RELEASE_VERSION+$RELEASE_CODE build result [skip ci]"
+          git add -- ".inspection/$RELEASE/$GITHUB_RUN_ID/"
+          git commit -m "Publish TraderDesk $RELEASE result [skip ci]"
           git pull --rebase origin "$GITHUB_REF_NAME"
           git push origin "HEAD:$GITHUB_REF_NAME"
