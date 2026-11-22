@@ -22,7 +22,7 @@ jobs:
           import os, pathlib, zipfile, stat, hashlib
           a = pathlib.Path('TraderDesk_Android_Project_v1.7.105+161_GPT_SOURCE.zip')
           b = a.read_bytes()
-          assert hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest() == '2bd67a2ced9bd9301efc5bb5d9b1e69580a543c7'
+          assert hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest() == 'ddd86fb5153233b9cf6646696acfcbd3c035f6c6'
           root = pathlib.Path('release-source').resolve()
           root.mkdir()
           with zipfile.ZipFile(a) as z:
