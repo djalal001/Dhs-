@@ -1,0 +1,27 @@
+{
+  "status": "success",
+  "steps": {
+    "build": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "verify": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "apk": {
+      "outputs": {
+        "artifact-id": "14760453280",
+        "artifact-digest": "50bb62db4ef4a63c2dbb6ed60b075fa7d195f1511fc2faadd6ae0c7dfb891de5",
+        "artifact-url": "https://github.com/djalal001/Dhs-/actions/runs/45038492748/artifacts/14760453280"
+      },
+      "outcome": "success",
+      "conclusion": "success"
+    }
+  },
+  "artifact_url": "https://github.com/djalal001/Dhs-/actions/runs/45038492748/artifacts/14760453280",
+  "run_url": "https://github.com/djalal001/Dhs-/actions/runs/45038492748",
+  "source_commit": "1e218223353d9db6c449b5fb1afc303fa7bcce36"
+}
