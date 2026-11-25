@@ -1,0 +1,23 @@
+{
+  "status": "failure",
+  "steps": {
+    "build": {
+      "outputs": {},
+      "outcome": "failure",
+      "conclusion": "failure"
+    },
+    "verify": {
+      "outputs": {},
+      "outcome": "skipped",
+      "conclusion": "skipped"
+    },
+    "apk": {
+      "outputs": {},
+      "outcome": "skipped",
+      "conclusion": "skipped"
+    }
+  },
+  "artifact_url": "",
+  "run_url": "https://github.com/djalal001/Dhs-/actions/runs/45606612745",
+  "source_commit": "6f30dcad2ad66690e3ea1a5b62f4a4e8b90ecebf"
+}
