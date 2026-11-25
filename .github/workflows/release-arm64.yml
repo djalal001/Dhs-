@@ -9,7 +9,7 @@ concurrency:
   group: traderdesk-release-${{ github.ref }}
   cancel-in-progress: true
 env:
-  RELEASE: '1.7.118+174'
+  RELEASE: '1.7.119+175'
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -20,9 +20,9 @@ jobs:
         run: |
           python3 - <<'PY'
           import os, pathlib, zipfile, stat, hashlib
-          a = pathlib.Path('TraderDesk_Android_Project_v1_7_118_174_GPT_SOURCE.zip')
+          a = pathlib.Path('TraderDesk_Android_Project_v1_7_119_175_GPT_SOURCE.zip')
           b = a.read_bytes()
-          assert hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest() == '8a4f563f5d62572da7062b7b231352770300a04a'
+          assert hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest() == '7c6b9eb13bdd500ec38aecf4a1b9f0192efeb235'
           root = pathlib.Path('release-source').resolve()
           root.mkdir()
           with zipfile.ZipFile(a) as z:
@@ -82,11 +82,11 @@ jobs:
           tools = pathlib.Path(os.environ['ANDROID_HOME'])/'build-tools/36.0.0'
           text = subprocess.check_output([str(tools/'aapt'), 'dump', 'badging', str(src)], text=True)
           assert 'application-debuggable' not in text
-          assert re.search(r"versionName='([^']+)'", text).group(1) == '1.7.118'
-          assert re.search(r"versionCode='([^']+)'", text).group(1) == '174'
+          assert re.search(r"versionName='([^']+)'", text).group(1) == '1.7.119'
+          assert re.search(r"versionCode='([^']+)'", text).group(1) == '175'
           subprocess.run([str(tools/'apksigner'), 'verify', '--print-certs', str(src)], check=True)
           pathlib.Path('release-apk').mkdir()
-          dst = pathlib.Path('release-apk/TraderDesk-1.7.118+174-arm64-v8a-release.apk')
+          dst = pathlib.Path('release-apk/TraderDesk-1.7.119+175-arm64-v8a-release.apk')
           shutil.copy2(src, dst)
           info = dict(filename=dst.name, bytes=dst.stat().st_size, MiB=round(dst.stat().st_size/1048576, 2), sha256=hashlib.sha256(dst.read_bytes()).hexdigest())
           pathlib.Path('diagnostics').mkdir(exist_ok=True)
@@ -96,8 +96,8 @@ jobs:
           PY
       - uses: actions/upload-artifact@v4
         id: apk
-        with:
-          name: TraderDesk-1.7.118+174-ARM64-RELEASE-${{ github.run_number }}
+n        with:
+          name: TraderDesk-1.7.119+175-ARM64-RELEASE-${{ github.run_number }}
           path: release-apk/*.apk
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
